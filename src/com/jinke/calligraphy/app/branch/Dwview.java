@@ -83,10 +83,7 @@ public class Dwview extends View {
     //Log.d(VIEW_LOG_TAG, "btn");
     //}
   
-    public void changeVanvasArea(int b){
-    
-    	//a=b;
-    	}
+
 	
 	public Dwview(Context context) {
 		super(context);

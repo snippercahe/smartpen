@@ -244,9 +244,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 	};
 
-	
-//	传入一个文件名获取他的图片，返回的是图片路径数组
-	
+	// 传入一个文件名获取他的图片，返回的是图片路径数组
+
 	private String[] getFile(File files) {
 		Log.v("zgm", "这是测试");
 		String[] returnStrings = null;
@@ -257,12 +256,13 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 					Environment.MEDIA_MOUNTED)) {
 				// 获取SD卡的目录
 				File sdCardDir = Environment.getExternalStorageDirectory();
-				File newFile = new File(sdCardDir + File.separator +"mynewimg"+ File.separator +files);
-				Log.v("zgm", "这是测试"+newFile);
+				File newFile = new File(sdCardDir + File.separator + "mynewimg"
+						+ File.separator + files);
+				Log.v("zgm", "这是测试" + newFile);
 				File filesArry[] = newFile.listFiles();
-				
-				Log.v("zgm", "这是测试"+filesArry.length);
-				Log.v("zgm", "布尔值："+filesArry[0].isDirectory());
+
+				Log.v("zgm", "这是测试" + filesArry.length);
+				Log.v("zgm", "布尔值：" + filesArry[0].isDirectory());
 				for (File file : filesArry) {
 					if (file.isDirectory()) {
 
@@ -271,29 +271,30 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 					} else {
 						Log.v("zgm", "我执行了不是路径的情况");
 						String fileName = file.getName();
-						Log.v("zgm", "路径中文件的名字:"+fileName);
+						Log.v("zgm", "路径中文件的名字:" + fileName);
 						if (fileName.endsWith(".png")
 								|| fileName.endsWith(".jpeg")
 								|| fileName.endsWith(".jpg")
 								|| fileName.endsWith(".bmp")
 								|| fileName.endsWith(".gif")) {
 
-//							ArrayList<String> dirAllStrArr = new ArrayList<String>();
+							// ArrayList<String> dirAllStrArr = new
+							// ArrayList<String>();
 
 							dirAllStrArr.add(newFile.getPath() + File.separator
 									+ file.getName());
-							Log.v("zgm", "最终的路径:"+dirAllStrArr.get(0));
-							
-							
-//							returnStrings = (String[]) dirAllStrArr.toArray();
-							
-							
+							Log.v("zgm", "最终的路径:" + dirAllStrArr.get(0));
+
+							// returnStrings = (String[])
+							// dirAllStrArr.toArray();
+
 						}
 					}
 				}
-				Log.v("zgm", "dirAllStrArr:"+dirAllStrArr.size());
-				returnStrings = (String[]) dirAllStrArr.toArray(new String[dirAllStrArr.size()]);
-				Log.v("zgm", "最终返回的数组长度:"+returnStrings.length);
+				Log.v("zgm", "dirAllStrArr:" + dirAllStrArr.size());
+				returnStrings = (String[]) dirAllStrArr
+						.toArray(new String[dirAllStrArr.size()]);
+				Log.v("zgm", "最终返回的数组长度:" + returnStrings.length);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -566,8 +567,6 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	public ImageView wrongHistorys;
 	public ImageView[] historyImages;// 历史图片堆，在ListView下面
 	public ImageView bigimage;
-
-	private int pigaihuanHuaBuChange;
 
 	public static Canvas pigaihuanSaveCanvas;// 批改环批改痕迹保存画布
 
@@ -1866,32 +1865,13 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 注册监听，对history1按钮按下响应
 		history1.setTextSize(14);
 
-		// ImageView refRightIv1= new ImageView(context);
-		// // refAlmostIv1=( ImageView)findViewById(R.drawable.almosthistory1);
-		// ImageView refRightIv2= new ImageView(context);
-		// // refAlmostIv2=(ImageView)findViewById(R.drawable.almosthistory2);
-		// ImageView refRightIv3= new ImageView(context);
-		// // refAlmostIv3=( ImageView)findViewById(R.drawable.almosthistory3);
-		// ImageView refRightIv4= new ImageView(context);
-		// // refAlmostIv4=( ImageView)findViewById(R.drawable.almosthistory4);
-		//
-		// addImage(refRightIv1, insideLY - band-200, 0*450, insideLY
-		// - band,1*430, R.drawable.s1);
-		// refAlmostIv1.setVisibility(View.GONE);
-		//
-
 		history1.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+
 					hListView[0].setVisibility(VISIBLE);
 					hListView[1].setVisibility(GONE);
 					hListView[2].setVisibility(GONE);
@@ -1905,7 +1885,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// Toast.LENGTH_SHORT).show();
 				else {
 					hListView[0].setVisibility(GONE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange=0);
+
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -1973,21 +1953,17 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+					historyImages[0].setBackgroundColor(Color.GREEN);
+
 					hListView[0].setVisibility(VISIBLE);
 					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 1;
 					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
 				}
-				// Toast.makeText(mContext, "你点击了历史2",
-				// Toast.LENGTH_SHORT).show();
+
 				else {
 					hListView[0].setVisibility(GONE);
+					historyImages[0].setBackgroundColor(Color.TRANSPARENT);
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -2006,12 +1982,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+
+					historyImages[1].setBackgroundColor(Color.GREEN);
+
 					hListView[1].setVisibility(VISIBLE);
 					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 1;
@@ -2021,6 +1994,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// Toast.LENGTH_SHORT).show();
 				else {
 					hListView[1].setVisibility(GONE);
+					historyImages[1].setBackgroundColor(Color.TRANSPARENT);
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -2037,12 +2011,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+
+					historyImages[2].setBackgroundColor(Color.GREEN);
+
 					hListView[2].setVisibility(VISIBLE);
 					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 1;
@@ -2052,6 +2023,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// Toast.LENGTH_SHORT).show();
 				else {
 					hListView[2].setVisibility(GONE);
+					historyImages[2].setBackgroundColor(Color.TRANSPARENT);
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -2068,12 +2040,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+
+					historyImages[3].setBackgroundColor(Color.GREEN);
+
 					hListView[3].setVisibility(VISIBLE);
 					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 1;
@@ -2083,6 +2052,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// Toast.LENGTH_SHORT).show();
 				else {
 					hListView[3].setVisibility(GONE);
+					historyImages[3].setBackgroundColor(Color.TRANSPARENT);
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -2100,12 +2070,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+
+					historyImages[4].setBackgroundColor(Color.GREEN);
+
 					hListView[4].setVisibility(VISIBLE);
 					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 1;
@@ -2115,6 +2082,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// Toast.LENGTH_SHORT).show();
 				else {
 					hListView[4].setVisibility(GONE);
+					historyImages[4].setBackgroundColor(Color.TRANSPARENT);
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -2124,219 +2092,6 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 		});
 
-		//
-		//
-
-		// refAlmostIv1.setVisibility(View.GONE);
-
-		// **********************************************************历史图片的的点击事件********************************************************
-		// refAlmostIv1.setOnClickListener(new OnClickListener() {
-
-		// @Override
-		// public void onClick(View v) {
-		// TODO Auto-generated method stub
-		// pigaihuanHuaBuChange=0;
-		// dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// refAlmostIv1.setVisibility(View.GONE);
-		// System.out.println("" + mHits.length);
-		// Log.i("yanshi", "点击");
-		// System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-		//
-		// // 判断为双击事件
-		// // 先延时再判断
-		//
-		// mHits[1] = SystemClock.uptimeMillis(); // 系统开机时间
-		// if ((mHits[1] - mHits[0] > 0) && (mHits[1] - mHits[0] < 1000)) {
-		// clickCount = 2;
-		// Log.i("click", "" + clickCount);
-		// } else {
-		// // new Handler().postDelayed(new Runnable(){
-		// //
-		// // public void run() {
-		//
-		// clickCount = 1;// 判断为单击事件
-		// // Log.i("click",""+clickCount);
-		// // }
-		// // },1000);
-		// }
-		// // 不同事件做出不同处理
-		// System.out.println(clickCount);
-		// new Handler().postDelayed(new Runnable() {
-		//
-		// public void run() {
-		// Log.i("yanshi", "延时响应");
-		// switch (clickCount) {
-		// case 0: {
-		// clickCount = 0;
-		// break;
-		// }
-		// case 1: {// 单击全部消失
-		// clickCount = 0;
-		// pigaihuanHuaBuChange = 0;
-		// dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// refAlmostIv1.setVisibility(View.GONE);
-		// refAlmostIv2.setVisibility(View.GONE);
-		// refAlmostIv3.setVisibility(View.GONE);
-		// refAlmostIv4.setVisibility(View.GONE);
-		// // System.out.println( mHits[1] - mHits[0]);
-		// System.out.println(clickCount);
-		// break;
-		// }
-		// case 2: {// 双击加载大图
-		// bigimage.setVisibility(View.VISIBLE);
-		// new Handler().postDelayed(new Runnable() {
-		// public void run() {
-		// clickCount = 0;// 判断为单击事件
-		// System.out.println(clickCount);
-		// }
-		// }, 200);
-		//
-		// break;
-		// }
-		//
-		// }
-		// }
-		// }, 200);
-		//
-		// }
-		// });
-		//
-		// *********************************************************************
-		// addImage(refAlmostIv2, insideLY - band - 200, 1 * 430, insideLY -
-		// band,
-		// 2 * 430, R.drawable.almosthistory2);
-		// refAlmostIv2.setVisibility(View.GONE);
-		// **************************************历史图片的的点击事件********************
-
-		// refAlmostIv2.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// TODO Auto-generated method stub
-		// pigaihuanHuaBuChange=0;
-		// dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// refAlmostIv1.setVisibility(View.GONE);
-		// System.out.println("" + mHits.length);
-		//
-		// System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-		// mHits[mHits.length - 1] = SystemClock.uptimeMillis(); // 系统开机时间
-		// if (mHits[1] - mHits[0] > 0 && mHits[1] - mHits[0] < 500) {
-		// pigaihuanHuaBuChange = 0;
-		// dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// refAlmostIv1.setVisibility(View.GONE);
-		// refAlmostIv2.setVisibility(View.GONE);
-		// refAlmostIv3.setVisibility(View.GONE);
-		// refAlmostIv4.setVisibility(View.GONE);
-		// System.out.println(mHits[1] - mHits[0]);
-		// }
-		//
-		// }
-		// });
-
-		// *********************************************************************
-
-		// addImage(refAlmostIv3, insideLY - band - 200, 2 * 430, insideLY -
-		// band,
-		// 3 * 430, R.drawable.almosthistory3);
-		// refAlmostIv3.setVisibility(View.GONE);
-
-		// **************************************历史图片的的点击事件********************
-
-		// refAlmostIv3.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// TODO Auto-generated method stub
-		// pigaihuanHuaBuChange=0;
-		// dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// refAlmostIv1.setVisibility(View.GONE);
-		// System.out.println("" + mHits.length);
-		//
-		// System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-		// mHits[mHits.length - 1] = SystemClock.uptimeMillis(); // 系统开机时间
-		// if (mHits[1] - mHits[0] > 0 && mHits[1] - mHits[0] < 500) {
-		// pigaihuanHuaBuChange = 0;
-		// dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// refAlmostIv1.setVisibility(View.GONE);
-		// refAlmostIv2.setVisibility(View.GONE);
-		// refAlmostIv3.setVisibility(View.GONE);
-		// refAlmostIv4.setVisibility(View.GONE);
-		// System.out.println(mHits[1] - mHits[0]);
-		// bigimage.setVisibility(View.GONE);
-		// } else {
-		//
-		// new Handler().postDelayed(new Runnable() {
-		//
-		// public void run() {
-		//
-		// bigimage.setVisibility(View.VISIBLE);
-		// }
-		//
-		// }, 501);
-		// }
-		// }
-		// });
-
-		// *********************************************************************
-
-		// addImage(refAlmostIv4, insideLY - band - 200, 3 * 430, insideLY -
-		// band,
-		// 4 * 430, R.drawable.almosthistory4);
-		// refAlmostIv4.setVisibility(View.GONE);
-		//
-		// **************************************历史图片的的点击事件********************
-
-		// refAlmostIv4.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		// // pigaihuanHuaBuChange=0;
-		// // dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// // refAlmostIv1.setVisibility(View.GONE);
-		// System.out.println("" + mHits.length);
-		//
-		// System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-		// mHits[mHits.length - 1] = SystemClock.uptimeMillis(); // 系统开机时间
-		// if (mHits[1] - mHits[0] > 0 && mHits[1] - mHits[0] < 500) {
-		// pigaihuanHuaBuChange = 0;
-		// dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// refAlmostIv1.setVisibility(View.GONE);
-		// refAlmostIv2.setVisibility(View.GONE);
-		// refAlmostIv3.setVisibility(View.GONE);
-		// refAlmostIv4.setVisibility(View.GONE);
-		// System.out.println(mHits[1] - mHits[0]);
-		// } else {
-		// bigimage.setVisibility(View.VISIBLE);
-		//
-		// }
-		// }
-		// });
-		// 大图的点击事件
-		// bigimage.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		// // pigaihuanHuaBuChange=0;
-		// // dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// // refAlmostIv1.setVisibility(View.GONE);
-		//
-		// bigimage.setVisibility(View.GONE);
-		//
-		// }
-		// });
-
-		// //
-		// **********************************************************历史图片的的点击事件********************************************************
-		// refAlmostIv4.setOnTouchListener(new OnTouchListener() {
-		//
-		// @Override
-		// public boolean onTouch(View arg0, MotionEvent arg1) {
-		// // TODO Auto-generated method stub
-		// pigaihuanHuaBuChange=0;
-		// dwview.changeVanvasArea(pigaihuanHuaBuChange);
-		// refAlmostIv4.setVisibility(View.GONE);
-		// return false;
-		// }
-		// });
-
 		// 注册监听，对history2按钮按下响应
 		history2.setOnClickListener(new OnClickListener() {
 
@@ -2344,21 +2099,13 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+
 					hListView[1].setVisibility(VISIBLE);
 					hListView[0].setVisibility(GONE);
 					hListView[2].setVisibility(GONE);
 					hListView[3].setVisibility(GONE);
 					hListView[4].setVisibility(GONE);
-					
-					
-					
-					
+
 					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 1;
 					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
@@ -2367,7 +2114,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// Toast.LENGTH_SHORT).show();
 				else {
 					hListView[1].setVisibility(GONE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange=0);
+
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -2397,18 +2144,12 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+
 					hListView[2].setVisibility(VISIBLE);
 					hListView[0].setVisibility(GONE);
 					hListView[1].setVisibility(GONE);
 					hListView[3].setVisibility(GONE);
 					hListView[4].setVisibility(GONE);
-					
 
 					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 1;
@@ -2418,7 +2159,6 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// Toast.LENGTH_SHORT).show();
 				else {
 					hListView[2].setVisibility(GONE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange=0);
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -2433,7 +2173,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				- halfband, insideLX + 3 * blankx / 5, R.drawable.s3);
 
 		// ***************************************************************
-//&******************************************************新建button对象history4***************************************************************
+		// &******************************************************新建button对象history4***************************************************************
 		history4 = new Button(context);
 		addButton(history4, insideLY - halfband, insideLX + 3 * blankx / 5,
 				insideLY, insideLX + 4 * blankx / 5, judgeHistory[3],
@@ -2447,20 +2187,14 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+
 					hListView[3].setVisibility(VISIBLE);
 					hListView[0].setVisibility(GONE);
 					hListView[1].setVisibility(GONE);
 					hListView[2].setVisibility(GONE);
-					
+
 					hListView[4].setVisibility(GONE);
 
-					
 					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 1;
 					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
@@ -2469,7 +2203,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// Toast.LENGTH_SHORT).show();
 				else {
 					hListView[3].setVisibility(GONE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange=0);
+
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -2485,7 +2219,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				- halfband, insideLX + 4 * blankx / 5, R.drawable.s4);
 
 		// ***************************************************************
-		//************************************************************* 新建button对象history5**********************************************************
+		// *************************************************************
+		// 新建button对象history5**********************************************************
 		history5 = new Button(context);
 		addButton(history5, insideLY - halfband, insideLX + 4 * blankx / 5,
 				insideLY, insideRX, judgeHistory[4], 0xff0000ff, 0x55135901);
@@ -2498,19 +2233,13 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if (historyListViewVisibilityFlag == 0) {
-					pigaihuanHuaBuChange = 200;
-					// refAlmostIv1.setVisibility(VISIBLE);
-					// refAlmostIv2.setVisibility(VISIBLE);
-					// refAlmostIv3.setVisibility(VISIBLE);
-					// refAlmostIv4.setVisibility(VISIBLE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange);
+
 					hListView[4].setVisibility(VISIBLE);
 					hListView[0].setVisibility(GONE);
 					hListView[1].setVisibility(GONE);
 					hListView[2].setVisibility(GONE);
 					hListView[3].setVisibility(GONE);
-					
-					
+
 					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 1;
 					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
@@ -2519,7 +2248,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// Toast.LENGTH_SHORT).show();
 				else {
 					hListView[4].setVisibility(GONE);
-					dwview.changeVanvasArea(pigaihuanHuaBuChange=0);
+
 					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 					historyListViewVisibilityFlag = 0;
 					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
@@ -4753,33 +4482,31 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 		// ****************************************************************历史图片的ListView**************************************************************
 
-
 		File rightpicturesfiles = new File("rightpicturesfiles");
-		rightpicturesPath = getFile((File)rightpicturesfiles);
-		imageList[0]=rightpicturesPath;
-		Log.v("zgm", "测试imageList赋值是否成功"+rightpicturesPath.length);
+		rightpicturesPath = getFile((File) rightpicturesfiles);
+		imageList[0] = rightpicturesPath;
+		Log.v("zgm", "测试imageList赋值是否成功" + rightpicturesPath.length);
 		File almostpicturesfiles = new File("almostpicturesfiles");
-		almostpicturesPath = getFile((File)almostpicturesfiles);
-		imageList[1]=almostpicturesPath;
+		almostpicturesPath = getFile((File) almostpicturesfiles);
+		imageList[1] = almostpicturesPath;
 		File wrong1picturesfiles = new File("wrong1picturesfiles");
 		wrong1picturesPath = getFile((File) wrong1picturesfiles);
-		imageList[2]=wrong1picturesPath;
-		File wrong2picturesfiles =new File("wrong2picturesfiles");
+		imageList[2] = wrong1picturesPath;
+		File wrong2picturesfiles = new File("wrong2picturesfiles");
 		wrong2picturesPath = getFile((File) wrong2picturesfiles);
-		imageList[3]=wrong2picturesPath;
+		imageList[3] = wrong2picturesPath;
 		File wrongpicturesfiles = new File("wrongpicturesfiles");
 		wrongpicturesPath = getFile((File) wrongpicturesfiles);
-		imageList[4]=wrongpicturesPath;
-//		Log.v("zgm", ""+rightpicturesPath.length);
-		
+		imageList[4] = wrongpicturesPath;
+		// Log.v("zgm", ""+rightpicturesPath.length);
 
 		for (loopCounter = 0; loopCounter < 5; loopCounter++) {
 			Log.i("historyinitstatus", "历史图片组初始化完毕ok？");
 			// List<ImageView> historyImageList = new ArrayList<ImageView>();
 			// initHistorylist();
 			hListView[loopCounter] = new HorizontalListView(context);// 新建控件
-			Log.v("zgm", "创建hlistview,&"+loopCounter);
-			Log.v("zgm", "创建hlistview,&"+imageList[loopCounter].length);
+			Log.v("zgm", "创建hlistview,&" + loopCounter);
+			Log.v("zgm", "创建hlistview,&" + imageList[loopCounter].length);
 			final HorizontalListViewAdapter historyImageListAdapter = new HorizontalListViewAdapter(
 					mContext, imageList[loopCounter]);// 新建适配器
 
@@ -4824,11 +4551,10 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// addImage(bigimage,200, 20,
 				// 1800, 20,imageList[position]);
 
-			
-				bigimage.setImageBitmap(BitmapFactory.decodeFile(imageList[0][position]));
-						
-						
-//				bigimage.setImageResource(imageList[0][position]);
+				bigimage.setImageBitmap(BitmapFactory
+						.decodeFile(imageList[0][position]));
+
+				// bigimage.setImageResource(imageList[0][position]);
 				bigimage.setVisibility(View.VISIBLE);
 				// historyImageListAdapter.setSelectIndex(position);
 				// historyImageListAdapter.notifyDataSetChanged();
@@ -4914,8 +4640,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 						.show();
 				// addImage(bigimage,200, 20,
 				// 1800, 20,imageList[position]);
-				bigimage.setImageBitmap(BitmapFactory.decodeFile(imageList[1][position]));
-//				bigimage.setImageResource(imageList[1][position]);
+				bigimage.setImageBitmap(BitmapFactory
+						.decodeFile(imageList[1][position]));
+				// bigimage.setImageResource(imageList[1][position]);
 				bigimage.setVisibility(View.VISIBLE);
 				// historyImageListAdapter.setSelectIndex(position);
 				// historyImageListAdapter.notifyDataSetChanged();
@@ -4935,8 +4662,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 						.show();
 				// addImage(bigimage,200, 20,
 				// 1800, 20,imageList[position]);
-				bigimage.setImageBitmap(BitmapFactory.decodeFile(imageList[2][position]));
-//				bigimage.setImageResource(imageList[2][position]);
+				bigimage.setImageBitmap(BitmapFactory
+						.decodeFile(imageList[2][position]));
+				// bigimage.setImageResource(imageList[2][position]);
 				bigimage.setVisibility(View.VISIBLE);
 				// historyImageListAdapter.setSelectIndex(position);
 				// historyImageListAdapter.notifyDataSetChanged();
@@ -4957,8 +4685,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 						.show();
 				// addImage(bigimage,200, 20,
 				// 1800, 20,imageList[position]);
-				bigimage.setImageBitmap(BitmapFactory.decodeFile(imageList[3][position]));
-//				bigimage.setImageResource(imageList[3][position]);
+				bigimage.setImageBitmap(BitmapFactory
+						.decodeFile(imageList[3][position]));
+				// bigimage.setImageResource(imageList[3][position]);
 				bigimage.setVisibility(View.VISIBLE);
 				// historyImageListAdapter.setSelectIndex(position);
 				// historyImageListAdapter.notifyDataSetChanged();
@@ -4979,8 +4708,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 						.show();
 				// addImage(bigimage,200, 20,
 				// 1800, 20,imageList[position]);
-				bigimage.setImageBitmap(BitmapFactory.decodeFile(imageList[4][position]));
-//				bigimage.setImageResource(imageList[4][position]);
+				bigimage.setImageBitmap(BitmapFactory
+						.decodeFile(imageList[4][position]));
+				// bigimage.setImageResource(imageList[4][position]);
 				bigimage.setVisibility(View.VISIBLE);
 				// historyImageListAdapter.setSelectIndex(position);
 				// historyImageListAdapter.notifyDataSetChanged();
