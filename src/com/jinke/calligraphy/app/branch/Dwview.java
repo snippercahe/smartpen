@@ -85,7 +85,7 @@ public class Dwview extends View {
   
     public void changeVanvasArea(int b){
     
-    	a=b;
+    	//a=b;
     	}
 	
 	public Dwview(Context context) {
@@ -102,7 +102,7 @@ public class Dwview extends View {
 	// 重写该方法，进行绘图
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-	canvas.clipRect(0, 599-a, 1600, 2100);
+	canvas.clipRect(0, 799-a, 1600, 2100);
         //this.btn();
 		// 获得屏幕的尺寸,三星平板屏幕为：1600x2560（单位px)
 		
