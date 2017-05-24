@@ -164,7 +164,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	}
 
 	public static GestureView gestures;
-	public static GestureView pigaihuanGestures;// 批改环的手势识别层
+	public static GestureView pigaihuanGestures;// 批改环手势识别层
 	public static float yy;// 设置toast显示位置
 
 	// 抬头作业信息
