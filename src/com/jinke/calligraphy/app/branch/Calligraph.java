@@ -566,7 +566,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	public ImageView wrong2Historys;
 	public ImageView wrongHistorys;
 	public ImageView[] historyImages;// 历史图片堆，在ListView下面
-	public ImageView bigimage;
+	public BigImageView bigimage;
 
 	public static Canvas pigaihuanSaveCanvas;// 批改环批改痕迹保存画布
 
@@ -608,11 +608,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	 */
 	private int subMenuTextColor = 0Xffff0000;
 	private int subMenuBackgroundColor = 0xff00ffff;
-	// private int transparencyofSubMenu; //二级菜单透明度变量
-	// private int color;//二级菜单颜色度变量
-	// private int knowledge = 0;
-	// private int baset = 0;
-	//
+
 
 	// *******************************批改环上表格历史判断类型计数器****************************************
 	private int rightNumber = 0; // 该计数器的值来源于 rightCounter；
@@ -839,6 +835,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			{ "仔细审题", "先把概念吃透", "沉下心去", "沉着应对", "做就要做好" } };
 
 	public static int subMenuBtnContentVersion = 1;
+	
+
 
 	// 动画变量 ttt cahe
 	private TextView sideText;
@@ -1858,57 +1856,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		expression = new Button(context);
 		write = new Button(context);
 
-		// **********************************************新建button对象history1F************************************************
-		history1 = new Button(context);
-		addButton(history1, insideLY - halfband, insideLX, insideLY, insideLX
-				+ blankx / 5, judgeHistory[0], 0xff0000ff, 0x55135901);
-		// 注册监听，对history1按钮按下响应
-		history1.setTextSize(14);
-
-		history1.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (historyListViewVisibilityFlag == 0) {
-
-					hListView[0].setVisibility(VISIBLE);
-					hListView[1].setVisibility(GONE);
-					hListView[2].setVisibility(GONE);
-					hListView[3].setVisibility(GONE);
-					hListView[4].setVisibility(GONE);
-					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 1;
-					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
-				}
-				// Toast.makeText(mContext, "你点击了历史2",
-				// Toast.LENGTH_SHORT).show();
-				else {
-					hListView[0].setVisibility(GONE);
-
-					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 0;
-					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
-				}
-
-			};
-
-		});
-
-		// ****************添加图片***********************************************
-		ImageView right = new ImageView(context);
-		addImage(right, insideLY - band, insideLX, insideLY - halfband,
-				insideLX + blankx / 5, R.drawable.s1);
-
-		// ***************************************************************
-
-		// ************************************************
-		// *********************************************************************新建button对象history2*************************************************
-		history2 = new Button(context);
-		addButton(history2, insideLY - halfband, insideLX + blankx / 5,
-				insideLY, insideLX + 2 * blankx / 5, judgeHistory[1],
-				0xff0000ff, 0x55135901);
-		history2.setTextSize(14);
+		
 
 		// 添加参考答案
 		// refAlmostIv = new ImageView(context);
@@ -1945,153 +1893,97 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 					* blankx / 5, R.drawable.historys);
 
 		}
-		// *****************************************historyImages[0]
-		// 的监听器*****************************************************
-		historyImages[0].setOnClickListener(new OnClickListener() {
+		// *****************************************historyImages[0] 的监听器*****************************************************
+		
+		
+		for (int btnCount = 0; btnCount < 5; btnCount++) {
+            final int count=btnCount;
+			historyImages[count].setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (historyListViewVisibilityFlag == 0) {
-					historyImages[0].setBackgroundColor(Color.GREEN);
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					my_toast(String.valueOf(count));
+					if (historyListViewVisibilityFlag == 0) {
+						historyListViewVisibilityFlag = 1;
+						historyImages[count].setBackgroundColor(Color.GREEN);
+						for (int i = 0; i < 5; i++) {
+							if (i != count){
+								hListView[i].setVisibility(GONE);
+							historyImages[i].setBackgroundColor(Color.TRANSPARENT);
+							}
+							else {
+								hListView[i].setVisibility(VISIBLE);
+								historyImages[i].setVisibility(VISIBLE);
+							}
+						}
+					}
+					else {
+						hListView[count].setVisibility(GONE);
+						historyImages[count].setBackgroundColor(Color.TRANSPARENT);
+						historyListViewVisibilityFlag = 0;
+					}
+				};
+			});
+		}
 
-					hListView[0].setVisibility(VISIBLE);
-					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 1;
-					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
-				}
 
-				else {
-					hListView[0].setVisibility(GONE);
-					historyImages[0].setBackgroundColor(Color.TRANSPARENT);
-					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 0;
-					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
-				}
+		
+		
+		// **********************************************新建button对象history1F************************************************
+				history1 = new Button(context);
+				addButton(history1, insideLY - halfband, insideLX, insideLY, insideLX
+						+ blankx / 5, judgeHistory[0], 0xff0000ff, 0x55135901);
+				// 注册监听，对history1按钮按下响应
+				history1.setTextSize(14);
 
-			};
+				history1.setOnClickListener(new OnClickListener() {
 
-		});
+					@Override
+					public void onClick(View arg0) {
+						// TODO Auto-generated method stub
+						if (historyListViewVisibilityFlag == 0) {
 
-		// *****************************************historyImages[1]
-		// 的监听器*****************************************************
+							hListView[0].setVisibility(VISIBLE);
+							hListView[1].setVisibility(GONE);
+							hListView[2].setVisibility(GONE);
+							hListView[3].setVisibility(GONE);
+							hListView[4].setVisibility(GONE);
+							Log.i("hListView", "1：" + historyListViewVisibilityFlag);
+							historyListViewVisibilityFlag = 1;
+							Log.i("hListView", "2：" + historyListViewVisibilityFlag);
+						}
+						// Toast.makeText(mContext, "你点击了历史2",
+						// Toast.LENGTH_SHORT).show();
+						else {
+							hListView[0].setVisibility(GONE);
 
-		historyImages[1].setOnClickListener(new OnClickListener() {
+							Log.i("hListView", "3：" + historyListViewVisibilityFlag);
+							historyListViewVisibilityFlag = 0;
+							Log.i("hListView", "4：" + historyListViewVisibilityFlag);
+						}
 
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (historyListViewVisibilityFlag == 0) {
+					};
 
-					historyImages[1].setBackgroundColor(Color.GREEN);
+				});
 
-					hListView[1].setVisibility(VISIBLE);
-					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 1;
-					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
-				}
-				// Toast.makeText(mContext, "你点击了历史2",
-				// Toast.LENGTH_SHORT).show();
-				else {
-					hListView[1].setVisibility(GONE);
-					historyImages[1].setBackgroundColor(Color.TRANSPARENT);
-					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 0;
-					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
-				}
+				// ****************添加图片***********************************************
+				ImageView right = new ImageView(context);
+				addImage(right, insideLY - band, insideLX, insideLY - halfband,
+						insideLX + blankx / 5, R.drawable.s1);
 
-			};
+				// ***************************************************************
 
-		});
-		// *****************************************historyImages[2]
-		// 的监听器*****************************************************
-		historyImages[2].setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (historyListViewVisibilityFlag == 0) {
-
-					historyImages[2].setBackgroundColor(Color.GREEN);
-
-					hListView[2].setVisibility(VISIBLE);
-					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 1;
-					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
-				}
-				// Toast.makeText(mContext, "你点击了历史2",
-				// Toast.LENGTH_SHORT).show();
-				else {
-					hListView[2].setVisibility(GONE);
-					historyImages[2].setBackgroundColor(Color.TRANSPARENT);
-					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 0;
-					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
-				}
-
-			};
-
-		});
-		// *****************************************historyImages[3]
-		// 的监听器*****************************************************
-		historyImages[3].setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (historyListViewVisibilityFlag == 0) {
-
-					historyImages[3].setBackgroundColor(Color.GREEN);
-
-					hListView[3].setVisibility(VISIBLE);
-					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 1;
-					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
-				}
-				// Toast.makeText(mContext, "你点击了历史2",
-				// Toast.LENGTH_SHORT).show();
-				else {
-					hListView[3].setVisibility(GONE);
-					historyImages[3].setBackgroundColor(Color.TRANSPARENT);
-					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 0;
-					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
-				}
-
-			};
-
-		});
-
-		// *****************************************historyImages[4]
-		// 的监听器*****************************************************
-		historyImages[4].setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (historyListViewVisibilityFlag == 0) {
-
-					historyImages[4].setBackgroundColor(Color.GREEN);
-
-					hListView[4].setVisibility(VISIBLE);
-					Log.i("hListView", "1：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 1;
-					Log.i("hListView", "2：" + historyListViewVisibilityFlag);
-				}
-				// Toast.makeText(mContext, "你点击了历史2",
-				// Toast.LENGTH_SHORT).show();
-				else {
-					hListView[4].setVisibility(GONE);
-					historyImages[4].setBackgroundColor(Color.TRANSPARENT);
-					Log.i("hListView", "3：" + historyListViewVisibilityFlag);
-					historyListViewVisibilityFlag = 0;
-					Log.i("hListView", "4：" + historyListViewVisibilityFlag);
-				}
-
-			};
-
-		});
-
+				// ************************************************
+				// *********************************************************************新建button对象history2*************************************************
+				history2 = new Button(context);
+				addButton(history2, insideLY - halfband, insideLX + blankx / 5,
+						insideLY, insideLX + 2 * blankx / 5, judgeHistory[1],
+						0xff0000ff, 0x55135901);
+				history2.setTextSize(14);
+		
+		
+		
 		// 注册监听，对history2按钮按下响应
 		history2.setOnClickListener(new OnClickListener() {
 
@@ -4521,23 +4413,12 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			Log.v("zgm", "适配器创建成功2");
 			pigaihuanLayout.addView(hListView[loopCounter], historylistParams);
 			Log.v("zgm", "加载到批改环上");
-			// hListView.setOnItemClickListener(new OnItemClickListener() {
-			//
-			// @Override
-			// public void onItemClick(AdapterView<?> arg0, View arg1,
-			// int arg2, long arg3) {
-			// // TODO Auto-generated method stub
-			// historyImageListAdapter.setSelectIndex(arg2);
-			// historyImageListAdapter.notifyDataSetChanged();
-			// Toast.makeText(mContext, "ooo",Toast.LENGTH_SHORT).show();
-			// }
-			//
-			// });
+		
 
 			hListView[loopCounter].setVisibility(GONE);
 		}
-		bigimage = new ImageView(context);
-		// bigimage.setImageResource(R.drawable.almosthistory1);
+		bigimage = new BigImageView(context);
+		bigimage.setVisibility(View.GONE);
 		// **********************************************hListView[0]的点击事件***************************************************************
 		hListView[0].setOnItemClickListener(new OnItemClickListener() {
 
@@ -4560,71 +4441,6 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// historyImageListAdapter.notifyDataSetChanged();
 				Log.i("hListView", "弹出大图");
 
-				// System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-				// clickCount = 0;
-				// Log.i("hListView" ,"有人点击啦");
-				//
-				// mHits[1] = SystemClock.uptimeMillis(); // 系统开机时间
-				// Log.i("hListView" ,"获得系统时间");
-				// if ((mHits[1] - mHits[0] > 0) && (mHits[1] - mHits[0] <
-				// 1000)) {
-				// clickCount = 2;
-				// Log.i("hListView", "设置为2");
-				// }
-				// else {
-				// // new Handler().postDelayed(new Runnable(){
-				// //
-				// // // public void run() {
-				// //
-				// clickCount = 1;// 判断为单击事件
-				// Log.i("hListView","设置为1");
-				// // // }
-				// // // },1000);
-				// }
-				// // // 不同事件做出不同处理
-				// // System.out.println(clickCount);
-				// new Handler().postDelayed(new Runnable() {
-				// public void run() {
-				// Log.i("yanshi", "延时响应");
-				// switch (clickCount) {
-				// case 0: {
-				// clickCount = 0;
-				// break;
-				// }
-				// case 1: {// 单击全部消失
-				//
-				// pigaihuanHuaBuChange = 0;
-				// dwview.changeVanvasArea(pigaihuanHuaBuChange);
-				// hListView.setVisibility(View.GONE);
-				// // refAlmostIv2.setVisibility(View.GONE);
-				// // refAlmostIv3.setVisibility(View.GONE);
-				// // refAlmostIv4.setVisibility(View.GONE);
-				// // System.out.println( mHits[1] - mHits[0]);
-				// Log.i("hListView" ,"我知道，你单击啦");
-				// clickCount = 0;
-				// break;
-				// }
-				// case 2: {// 双击加载大图
-				//
-				//
-				// // bigimage.setVisibility(View.VISIBLE);
-				// Log.i("hListView" ,""+clickCount);
-				// clickCount = 0;// 判断为单击事件
-				// break;
-				// }
-				//
-				// }
-				// }
-				// }, 300);
-				//
-				//
-				//
-				//
-				//
-				//
-				//
-				//
-				//
 			}
 		});
 
