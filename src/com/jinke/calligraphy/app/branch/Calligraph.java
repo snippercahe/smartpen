@@ -206,29 +206,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 	final static int unclick = 0x55135901;
 	final static int click = 0xff00ffff;
-	// public int[] imageList = { R.drawable.almosthistory1,
-	// R.drawable.almosthistory2, R.drawable.almosthistory3,
-	// R.drawable.almosthistory4, R.drawable.almosthistory5,
-	// R.drawable.almosthistory6, R.drawable.almosthistory7,
-	// R.drawable.almosthistory8 };
-	/*
-	 * public int[][] imageList={ { R.drawable.right1, R.drawable.right2,
-	 * R.drawable.right3, R.drawable.right4, R.drawable.right5,
-	 * R.drawable.right6, R.drawable.right7, R.drawable.right8 }, {
-	 * R.drawable.almost1, R.drawable.almost2, R.drawable.almost3,
-	 * R.drawable.almost4, R.drawable.almost5, R.drawable.almost6,
-	 * R.drawable.almost7, R.drawable.almost8 }, { R.drawable.wrong11,
-	 * R.drawable.wrong12, R.drawable.wrong13, R.drawable.wrong14,
-	 * R.drawable.wrong15, R.drawable.wrong16, R.drawable.wrong17,
-	 * R.drawable.wrong18 }, { R.drawable.wrong21, R.drawable.wrong22,
-	 * R.drawable.wrong23, R.drawable.wrong24, R.drawable.wrong25,
-	 * R.drawable.wrong26, R.drawable.wrong27, R.drawable.wrong28 }, {
-	 * R.drawable.wrong1, R.drawable.wrong2, R.drawable.wrong3,
-	 * R.drawable.wrong4, R.drawable.wrong5, R.drawable.wrong6,
-	 * R.drawable.wrong7, R.drawable.wrong8 }
-	 * 
-	 * };
-	 */
+	
 
 	/*
 	 * zgm 20170521
@@ -1635,7 +1613,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 							// TODO Auto-generated method stub
 							if (event.getAction() == MotionEvent.ACTION_UP
 									&& (overlay.getGesture().getLength() > 10)) {
-								handler.postDelayed(this, 1000);
+								handler.postDelayed(this, 300);
 								lastStrokeCount = overlay.getGesture()
 										.getStrokesCount();
 
@@ -1691,6 +1669,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 											judge = prediction1.name;
 											if (judge.equals("Right"))
 												judge = "Almost";
+											if(judge.equals("Almost")){
 
 											// 统计数据更新
 											halfwrong1Counter++;
@@ -1699,8 +1678,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 													+ "\n" + "本次统计："
 													+ halfwrong1Counter);
 											history2.setTextSize(14);
+											}
 
-											if (judge.equals("wrong")) {
+											else if (judge.equals("wrong")) {
 												wrongCounter++;
 												wrongNumber = wrongCounter;
 												history5.setText("历史统计：" + "12"
@@ -1906,7 +1886,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 					my_toast(String.valueOf(count));
 					if (historyListViewVisibilityFlag == 0) {
 						historyListViewVisibilityFlag = 1;
-						historyImages[count].setBackgroundColor(Color.GREEN);
+						historyImages[count].setBackgroundColor(0x55008b00);
 						for (int i = 0; i < 5; i++) {
 							if (i != count){
 								hListView[i].setVisibility(GONE);
@@ -4549,10 +4529,10 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 		RelativeLayout.LayoutParams bigImageParams = new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		bigImageParams.topMargin = 700;
-		// bigImageParams.leftMargin = 100;
-		bigImageParams.bottomMargin = 2400 - 1600;
-		// bigImageParams.rightMargin = 1600 - 1500;
+		bigImageParams.topMargin = 1000;
+		 bigImageParams.leftMargin = 100;
+		bigImageParams.bottomMargin = 500;
+		bigImageParams.rightMargin = 100;
 
 		pigaihuanLayout.addView(bigimage, bigImageParams);
 		// pigaihuanLayout.addView(bigimage);
