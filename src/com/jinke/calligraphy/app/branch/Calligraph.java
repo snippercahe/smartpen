@@ -236,8 +236,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				File sdCardDir = Environment.getExternalStorageDirectory();
 				File newFile = new File(sdCardDir + File.separator + "mynewimg"
 						+ File.separator + files);
-				Log.v("zgm", "这是测试" + newFile);
-				File filesArry[] = newFile.listFiles();
+				Log.v("zgm", "这是测试1" + newFile);
+				File[] filesArry= newFile.listFiles();
 
 				Log.v("zgm", "这是测试" + filesArry.length);
 				Log.v("zgm", "布尔值：" + filesArry[0].isDirectory());

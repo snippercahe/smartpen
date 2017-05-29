@@ -1,5 +1,10 @@
 package com.jinke.calligraphy.app.branch;
 
+import java.io.File;
+import java.util.ArrayList;
+
+import javax.security.auth.PrivateCredentialPermission;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -13,6 +18,7 @@ import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.util.Log;
@@ -41,6 +47,8 @@ public class DragAndPaintView extends ImageView {
 	public Canvas drawCanvas;
 
 	private int count = 1;
+	private File pigaihuantituwenjianjia;
+	
 	
 //	private int  piGaiHuanPiGaiTiMu=0;
 //	int  indexl=0;
@@ -53,12 +61,95 @@ public class DragAndPaintView extends ImageView {
 //		}
 //		
 //	
+	
+	// 传入一个文件名获取他的图片，返回的是图片路径数组
+
+	private String[] getFile(File files) {
+		Log.v("zgm", "这是测试");
+		Log.v("zgm", ""+files);
+		String[] returnStrings = null;
+		ArrayList<String> dirAllStrArr = new ArrayList<String>();
+		try {
+			// 如果手机插入了SD卡，而且应用程序具有访问SD卡的权限
+			if (Environment.getExternalStorageState().equals(
+					Environment.MEDIA_MOUNTED)) {
+				// 获取SD卡的目录
+				File sdCardDir = Environment.getExternalStorageDirectory();
+				File newFile = new File(sdCardDir + File.separator + "mynewimg"
+						+ File.separator +files);
+				Log.v("zgm", "这是测试2" + newFile);
+				File filesArry[] = newFile.listFiles();
+
+				Log.v("zgm", "这是测试" + filesArry.length);
+				Log.v("zgm", "布尔值：" + filesArry[0].isDirectory());
+				for (File file:filesArry) {
+					if (file.isDirectory()) {
+
+						// String fileNameString=file.getName();
+						getFile(file);// 递归调用可能有问题
+					} else {
+						Log.v("zgm", "我执行了不是路径的情况");
+						String fileName = file.getName();
+						Log.v("zgm", "路径中文件的名字:" + fileName);
+						if (fileName.endsWith(".png")
+								|| fileName.endsWith(".jpeg")
+								|| fileName.endsWith(".jpg")
+								|| fileName.endsWith(".bmp")
+								|| fileName.endsWith(".gif")) {
+
+							// ArrayList<String> dirAllStrArr = new
+							// ArrayList<String>();
+
+							dirAllStrArr.add(newFile.getPath() + File.separator
+									+ file.getName());
+							Log.v("zgm", "最终的路径:" + dirAllStrArr.get(0));
+
+							// returnStrings = (String[])
+							// dirAllStrArr.toArray();
+
+						}
+					}
+				}
+				Log.v("zgm", "dirAllStrArr:" + dirAllStrArr.size());
+				returnStrings = (String[]) dirAllStrArr
+						.toArray(new String[dirAllStrArr.size()]);
+				Log.v("zgm", "最终返回的数组长度:" + returnStrings.length);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+
+		}
+		return returnStrings;
+
+	}
+	
+//	private String[] piGaiHuanPiGaiTiMu=getFile((File) pigaihuantituwenjanjia);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public  void setBackGroundImage(int piGaiHuanPiGaiTiMu){
 		
-
 		
-		Resources res = getResources();
+Resources res = getResources();
 		piGaiHuanPiGaiTiMu = Calligraph.pageNum;
+		Log.v("zgm","我执行了");
+		pigaihuantituwenjianjia=new  File("pigaihuantituwenjianjia");
+ String[] piGaiHuanPiGaiTiMuArry=getFile((File) pigaihuantituwenjianjia);		
+ 
+		
+		
 /**
  * zgm
  * 2017.01.16:23:00
@@ -76,28 +167,37 @@ public class DragAndPaintView extends ImageView {
  * 2017.01.16:23:00
  */		
 		
+	
+		
 		switch (piGaiHuanPiGaiTiMu) {
 		case 1:
-			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp1);
+//			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp1);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[0]);
 			break;
 		case 2:
-			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp2);
+//			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp2);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[1]);
 			break;
 			
 		case 3:
-			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp3);
+//			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp3);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[2]);
 			break;	
 		case 4:
-			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp4);
+//			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp4);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[3]);
 			break;	
 		case 5:
-			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp5);
+//			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp5);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[4]);
 			break;	
 		case 6:
-			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp6);
+//			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp6);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[5]);
 			break;	
 		case 7:
-			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp7);
+//			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp7);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[6]);
 			break;		
 			
 		default:
