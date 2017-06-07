@@ -1,6 +1,8 @@
 package com.jinke.calligraphy.app.branch;
 
+
 import hallelujah.cal.CalligraphyVectorUtil;
+import com.downloadanddecompression.*;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -30,6 +32,7 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -820,6 +823,7 @@ public class Start extends Activity implements OnGestureListener, OnTouchListene
 			
 			
 		}
+		   showDownLoadDialog(); //2017.6.7
 	}
 
 	static class TT extends Thread{
@@ -2189,7 +2193,63 @@ public boolean onSingleTapUp(MotionEvent arg0) {
 	return false;
 }
 
+private void showDownLoadDialog(){  
+    new AlertDialog.Builder(this).setTitle("确认")  
+    .setMessage("是否下载？")  
+    .setPositiveButton("是", new OnClickListener() {  
+          
+        @Override  
+        public void onClick(DialogInterface dialog, int which) {  
+            // TODO Auto-generated method stub  
+            Log.d(TAG, "onClick 1 = "+which);  
+            doDownLoadWork();  
+        }  
+    })  
+    .setNegativeButton("否", new OnClickListener() {  
+          
+        @Override  
+        public void onClick(DialogInterface dialog, int which) {  
+            // TODO Auto-generated method stub  
+            Log.d(TAG, "onClick 2 = "+which);  
+        }  
+    })  
+    .show();  
+}  
+ 
+public void showUnzipDialog(){
+	new AlertDialog.Builder(this).setTitle("确认").setMessage("是否解压？").setPositiveButton("是", new OnClickListener() {  
+        
+      @Override  
+      public void onClick(DialogInterface dialog, int which) {  
+          // TODO Auto-generated method stub  
+          Log.d(TAG, "onClick 1 = "+which);  
+          doZipExtractorWork();  
+      }  
+  }).setNegativeButton("否", new OnClickListener() {  
+      
+    @Override  
+    public void onClick(DialogInterface dialog, int which) {  
+        // TODO Auto-generated method stub  
+        Log.d(TAG, "onClick 2 = "+which);  
+    }  
+})  
+.show();  
+	}
 
+
+
+  
+public void doZipExtractorWork(){  
+    //ZipExtractorTask task = new ZipExtractorTask("/storage/usb3/system.zip", "/storage/emulated/legacy/", this, true);  
+    ZipExtractorTask task = new ZipExtractorTask("/storage/emulated/0/testzip/0944-0001-0000-0023-0003-0009-0022.zip", "/storage/emulated/0/testzip", this, true);  
+    task.execute();  
+}  
+  
+private void doDownLoadWork(){  
+    DownLoaderTask task = new DownLoaderTask("http://192.168.1.115/jxyv1/Public/Uploads/0944-0001-0000-0023-0003-0009-0022.zip", "/storage/emulated/0/testzip", this);  
+    //DownLoaderTask task = new DownLoaderTask("http://192.168.9.155/johnny/test.h264", getCacheDir().getAbsolutePath()+"/", this);  
+    task.execute();  
+}  
 
 }
 
