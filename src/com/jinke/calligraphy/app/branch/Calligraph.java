@@ -49,6 +49,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
@@ -108,6 +109,7 @@ import android.view.WindowManager.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
+import android.content.res.AssetManager;
 
 public class Calligraph extends RelativeLayout implements OnPanelListener,
 		OnClickListener {
@@ -237,11 +239,11 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				File newFile = new File(sdCardDir + File.separator + "mynewimg"
 						+ File.separator + files);
 				Log.v("zgm", "这是测试1" + newFile);
-				File[] filesArry= newFile.listFiles();
+				File[] filesArray= newFile.listFiles();
 
-				Log.v("zgm", "这是测试" + filesArry.length);
-				Log.v("zgm", "布尔值：" + filesArry[0].isDirectory());
-				for (File file : filesArry) {
+				Log.v("zgm", "这是测试" + filesArray.length);
+				Log.v("zgm", "布尔值：" + filesArray[0].isDirectory());
+				for (File file : filesArray) {
 					if (file.isDirectory()) {
 
 						// String fileNameString=file.getName();
@@ -691,71 +693,71 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 	// *************************************************subMenuBtnContentVersion1**************************************************
 
-	// private String[] subMenuBtnNameLK_arry = new String[] { "方程的根是什么",
+	// private String[] subMenuBtnNameLK_array = new String[] { "方程的根是什么",
 	// "一元一次方程的定义不清",
 	// "系数定义不清", "项的定义不清", "一元中的“元”是什么" };
 	//
 	// private Button[] subMenuBtnLB_array = new Button[5];
-	// private String[] subMenuBtnNameLB_arry = new String[] { "方程化简不会",
+	// private String[] subMenuBtnNameLB_array = new String[] { "方程化简不会",
 	// "方程的形式不懂",
 	// "等式变换不会", "乘法运算不熟", "加法运算不熟" };
 	//
 	// private Button[] subMenuBtnLC_array = new Button[5];
-	// private String[] subMenuBtnNameLC_arry = new String[] { "与二元一次方程混淆",
+	// private String[] subMenuBtnNameLC_array = new String[] { "与二元一次方程混淆",
 	// "与一元二次方程混淆", "常数项和一次项搞混",
 	// "一次项系数能否为零混淆", "乘法法则与加法法则搞混" };
 	//
 	// private Button[] subMenuBtnLM_array = new Button[5];
-	// private String[] subMenuBtnNameLM_arry = new String[] { "乘法法则没记熟",
+	// private String[] subMenuBtnNameLM_array = new String[] { "乘法法则没记熟",
 	// "加法法则没记熟",
 	// "一元一次函数性质记得不熟", "次数定义不熟", "项的定义不熟" };
 	//
 	// private Button[] subMenuBtnLT_array = new Button[5];
-	// private String[] subMenuBtnNameLT_arry = new String[] { "三种形式不熟",
+	// private String[] subMenuBtnNameLT_array = new String[] { "三种形式不熟",
 	// "一次项系数的作用不熟",
 	// "方程化简不熟", "基本概念不熟", "函数与等式关系不熟" };
 	//
 	// private Button[] subMenuBtnBE_array = new Button[5];
-	// private String[] subMenuBtnNameBE_arry = new String[] { "一次项系数能否为零？",
+	// private String[] subMenuBtnNameBE_array = new String[] { "一次项系数能否为零？",
 	// "如何解方程",
 	// "移动是否改号", "乘法分配律是什么", "一次的次是什么意思" };
 	//
 	// private Button[] subMenuBtnBI_array = new Button[5];
-	// private String[] subMenuBtnNameBI_arry = new String[] { "加油", "你很聪明",
+	// private String[] subMenuBtnNameBI_array = new String[] { "加油", "你很聪明",
 	// "很有潜力", "很棒", "大红花" };
 	//
 	// private Button[] subMenuBtnBEx_array = new Button[5];
-	// private String[] subMenuBtnNameBEx_arry = new String[] { "仔细审题", "认真听课",
+	// private String[] subMenuBtnNameBEx_array = new String[] { "仔细审题", "认真听课",
 	// "灵活运用", "再接再厉", "要有耐心" };
 	//
 	// private Button[] subMenuBtnBD_array = new Button[5];
-	// private String[] subMenuBtnNameBD_arry = new String[] { "要有耐心",
+	// private String[] subMenuBtnNameBD_array = new String[] { "要有耐心",
 	// "弄懂参数的关系",
 	// "图象的位置", "两个交点", "一个交点" };
 	//
 	// private Button[] subMenuBtnBM_array = new Button[5];
-	// private String[] subMenuBtnNameBM_arry = new String[] { "多做题", "将概念吃透",
+	// private String[] subMenuBtnNameBM_array = new String[] { "多做题", "将概念吃透",
 	// "认真看书", "多多交流", "学习方法" };
 	//
 	// private Button[] subMenuBtnRW_array = new Button[5];
-	// private String[] subMenutextRW_arry = new String[] { "字体潦草", "书写认真",
+	// private String[] subMenutextRW_array = new String[] { "字体潦草", "书写认真",
 	// "练字",
 	// "横平竖直", "字迹清楚" };
 	//
 	// private Button[] subMenuBtnRE_array = new Button[5];
-	// private String[] subMenutextRE_arry = new String[] { "如何表达", "字句不通",
+	// private String[] subMenutextRE_array = new String[] { "如何表达", "字句不通",
 	// "组织语言", "想好下笔", "看书怎写" };
 	//
 	// private Button[] subMenuBtnRT_array = new Button[5];
-	// private String[] subMenutextRT_arry = new String[] { "多做题", "方法细节不会",
+	// private String[] subMenutextRT_array = new String[] { "多做题", "方法细节不会",
 	// "多总结", "勤加练习", "请教他人" };
 	//
 	// private Button[] subMenuBtnRU_array = new Button[5];
-	// private String[] subMenutextRU_arry = new String[] { "答题完整", "结果化成小数",
+	// private String[] subMenutextRU_array = new String[] { "答题完整", "结果化成小数",
 	// "注意格式", "认真书写", "积极起来" };
 	//
 	// private Button[] subMenuBtnRA_array = new Button[5];
-	// private String[] subMenutextRA_arry = new String[] { "仔细审题", "先把概念吃透",
+	// private String[] subMenutextRA_array = new String[] { "仔细审题", "先把概念吃透",
 	// "沉下心去",
 	// "沉着应对", "做就要做好" };
 
@@ -892,7 +894,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 	}
 
-	// private void historypicturearry(){
+	// private void historypicturearray(){
 	// int i=0;
 	// for(i=0;i<4;i++)
 	// addImage(refAlmostIv, insideLY - band-200, 0, insideLY
@@ -2997,10 +2999,18 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		sideText.setTextSize(25);
 		bottomText.setTextSize(25);
 		finalTv.setTextSize(25);
+		
+		//改个字体
+		
+		Typeface fontFace = Typeface.createFromAsset(getResources().getAssets(),"fonts/sxzt.ttf");
+		finalTv.setTypeface(fontFace);
+		sideText.setTypeface(fontFace);
+		bottomText.setTypeface(fontFace);
+		
+		
+		
+		
 
-		// sideText.setTextColor(Color.BLUE);
-		// bottomText.setTextColor(Color.BLUE);
-		// finalTv.setTextColor(Color.BLUE);
 
 		for (int i = 0; i < subMenuBtnLK_array.length; i++) {
 			final int index = i;

@@ -78,11 +78,11 @@ public class DragAndPaintView extends ImageView {
 				File newFile = new File(sdCardDir + File.separator + "mynewimg"
 						+ File.separator +files);
 				Log.v("zgm", "这是测试2" + newFile);
-				File filesArry[] = newFile.listFiles();
+				File filesArray[] = newFile.listFiles();
 
-				Log.v("zgm", "这是测试" + filesArry.length);
-				Log.v("zgm", "布尔值：" + filesArry[0].isDirectory());
-				for (File file:filesArry) {
+				Log.v("zgm", "这是测试" + filesArray.length);
+				Log.v("zgm", "布尔值：" + filesArray[0].isDirectory());
+				for (File file:filesArray) {
 					if (file.isDirectory()) {
 
 						// String fileNameString=file.getName();
@@ -146,7 +146,7 @@ Resources res = getResources();
 		piGaiHuanPiGaiTiMu = Calligraph.pageNum;
 		Log.v("zgm","我执行了");
 		pigaihuantituwenjianjia=new  File("pigaihuantituwenjianjia");
- String[] piGaiHuanPiGaiTiMuArry=getFile((File) pigaihuantituwenjianjia);		
+ String[] piGaiHuanPiGaiTiMuArray=getFile((File) pigaihuantituwenjianjia);		
  
 		
 		
@@ -172,32 +172,32 @@ Resources res = getResources();
 		switch (piGaiHuanPiGaiTiMu) {
 		case 1:
 //			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp1);
-			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[0]);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArray[0]);
 			break;
 		case 2:
 //			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp2);
-			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[1]);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArray[1]);
 			break;
 			
 		case 3:
 //			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp3);
-			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[2]);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArray[2]);
 			break;	
 		case 4:
 //			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp4);
-			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[3]);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArray[3]);
 			break;	
 		case 5:
 //			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp5);
-			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[4]);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArray[4]);
 			break;	
 		case 6:
 //			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp6);
-			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[5]);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArray[5]);
 			break;	
 		case 7:
 //			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp7);
-			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[6]);
+			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArray[6]);
 			break;		
 			
 		default:
