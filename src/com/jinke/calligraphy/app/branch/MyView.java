@@ -220,7 +220,7 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 	List<Long> clickTimes = new ArrayList<Long>();
 	private Boolean doubleClickState = true; //打开图true，关闭图false
 	
-	public  String bgName;
+	public   String bgName;
 	//作业xml信息 2016.3.23 caoheng
 	
 	
@@ -949,7 +949,7 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 					Calligraph.pigaiResultImageView.setVisibility(View.GONE);
 					Calligraph.pigaihuanPingyuText.setVisibility(View.GONE);
 					//更改批改环内的背景图
-					Calligraph.pBgImage.setBackGroundImage(bgName);
+					Calligraph.pBgImage.setBackGroundImage(bgName.substring(0, bgName.length()-4));
 					
 					if(Calligraph.pageNum>6){
 						System.arraycopy(Calligraph.subMenuBtnContent2, 0, Calligraph.subContentString, 0, Calligraph.subMenuBtnContent1.length);
@@ -3460,6 +3460,7 @@ public static void saveXML(File file) {
 		fos = new FileOutputStream(file, false);
 
 		fos.write(Calligraph.doc.html().getBytes());// 写入文件内容
+		
 		fos.flush();
 	} catch (IOException e) {
 		System.err.println("文件创建失败");

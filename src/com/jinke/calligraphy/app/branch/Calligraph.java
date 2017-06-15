@@ -49,6 +49,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
@@ -1193,7 +1194,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 								switch (situation) {
 								case 0:
 									question[currentItem - 1].right++;
-									elementResult.get(currentItem).text("对");
+									elementResult.get(currentItem-1).text("对");
 									text = Html
 											.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;<font color=red><b>"
 													+ question[currentItem - 1].right
@@ -1452,7 +1453,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		 */
 		//MyView myView=new MyView(null, null, null, null);
 		//Log.v("MyView", "MyView.bgName："+myView.bgName);
-		pBgImage.setBackGroundImage("0944-0001-0000-0023-0003-0009-0022.jpg");
+		pBgImage.setBackGroundImage("0944-0001-0000-0023-0003-0009-0022");
+//		pBgImage.setBackGroundImage(MyView.bgName.substring(0, MyView.bgName.length()-4));
+		
 	//	pBgImage.setBackGroundImage(7);
 		
 		// subMenuBtnContentVersion=pBgImage.indexl;
@@ -1535,6 +1538,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 							// 批改环的评语显示到Myview上
 							pigaihuanPingyuText.setVisibility(View.VISIBLE);
+							String  xxxString=(String) pigaihuanPingyuText.getText();//写到xml中的批改环评语
+							Log.i("cahe",xxxString);
+							elementComment.get(8).text(xxxString);
 
 							invalidate();
 							// 如何双击让批改环消失的时候一起清楚批改痕迹啊清除批改痕迹啊
@@ -3010,10 +3016,12 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		sideText.setTextSize(25);
 		bottomText.setTextSize(25);
 		finalTv.setTextSize(25);
-
-		// sideText.setTextColor(Color.BLUE);
-		// bottomText.setTextColor(Color.BLUE);
-		// finalTv.setTextColor(Color.BLUE);
+		
+//改个字体
+		Typeface fontFace = Typeface.createFromAsset(getResources().getAssets(),"fonts/sxzt.ttf");
+		finalTv.setTypeface(fontFace);
+		sideText.setTypeface(fontFace);
+		bottomText.setTypeface(fontFace);
 
 		for (int i = 0; i < subMenuBtnLK_array.length; i++) {
 			final int index = i;
@@ -6696,6 +6704,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		pigaihuanPingyuText.invalidate();
 		pigaihuanPingyuText.setDrawingCacheEnabled(true);
 		pigaihuanPingyuText.buildDrawingCache();
+
+		
 
 		pigaiResultImageView.invalidate();
 		pigaiResultImageView.setDrawingCacheEnabled(true);

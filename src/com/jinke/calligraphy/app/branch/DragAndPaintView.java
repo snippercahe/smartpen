@@ -142,7 +142,7 @@ public class DragAndPaintView extends ImageView {
 	//public  void setBackGroundImage(int piGaiHuanPiGaiTiMu){
 		public  void setBackGroundImage(String bgName){
 		
-		String  tiTuName = bgName.substring(bgName.length()-4)+"_9.png";//作业第9题题目
+		String  tiTuName = bgName.substring(0,bgName.length())+"_9.jpg";//作业第9题题目
 //Resources res = getResources();
 ////		piGaiHuanPiGaiTiMu = Calligraph.pageNum;
 //		Log.v("zgm","我执行了");
@@ -215,7 +215,9 @@ public class DragAndPaintView extends ImageView {
 //				File newFile = new File(sdCardDir + File.separator + "mynewimg"
 //						+ File.separator + tiTuName);
 				bgBitmap = BitmapFactory.decodeFile(sdCardDir + File.separator + "mynewimg"
-						+ File.separator + tiTuName);
+						+ File.separator + "slice"+File.separator+tiTuName);
+				Log.i("pbgimagetest",sdCardDir + File.separator + "mynewimg"
+						+ File.separator + "slice"+File.separator+tiTuName);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

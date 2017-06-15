@@ -2,8 +2,6 @@ package com.jinke.calligraphy.app.branch;
 
 
 import hallelujah.cal.CalligraphyVectorUtil;
-import com.downloadanddecompression.*;
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
