@@ -1,4 +1,4 @@
-package com.downloadanddecompression;
+package com.jinke.downloadanddecompression;
 
 
 

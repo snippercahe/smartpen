@@ -96,6 +96,8 @@ import com.jinke.calligraphy.date.DateTimeSlider;
 import com.jinke.calligraphy.date.GoogleCalendarUtil;
 import com.jinke.calligraphy.date.TimeLabeler;
 import com.jinke.calligraphy.template.WolfTemplateUtil;
+import com.jinke.downloadanddecompression.DownLoaderTask;
+import com.jinke.downloadanddecompression.ZipExtractorTask;
 import com.jinke.kanbox.DownloadAllFileThread;
 import com.jinke.kanbox.DownloadEntity;
 import com.jinke.mywidget.FileListDialog;

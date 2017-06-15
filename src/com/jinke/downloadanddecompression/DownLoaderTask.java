@@ -1,4 +1,4 @@
-package com.downloadanddecompression;
+package com.jinke.downloadanddecompression;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
