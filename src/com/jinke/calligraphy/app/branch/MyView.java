@@ -220,7 +220,7 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 	List<Long> clickTimes = new ArrayList<Long>();
 	private Boolean doubleClickState = true; //打开图true，关闭图false
 	
-	public String bgName;
+	public  String bgName;
 	//作业xml信息 2016.3.23 caoheng
 	
 	
@@ -229,6 +229,12 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 		this.mBitmap = bitmap;
 	}
 
+ 
+	
+
+
+
+	
 	public MyView(Context c, Bitmap bp, Bitmap layer, WolfTemplate wt) {
 		super(c);
 		pageXML = "0944-0001-0000-0023-0003-0009-0022";
@@ -878,6 +884,7 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 //				        	bgImage = getBitmap[1];
 						  bgImage = getPicAndName[1].getBitmap();
 						  bgName = getPicAndName[1].getName();
+						  Log.v("ceshi","ceshi"+ bgName);
 				        } else {
 				        	SlideMode = 0;
 				        }
@@ -941,7 +948,9 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 					Calligraph.tounaoText.setVisibility(View.GONE);
 					Calligraph.pigaiResultImageView.setVisibility(View.GONE);
 					Calligraph.pigaihuanPingyuText.setVisibility(View.GONE);
-					Calligraph.pBgImage.setBackGroundImage(Calligraph.pageNum);
+					//更改批改环内的背景图
+					Calligraph.pBgImage.setBackGroundImage(bgName);
+					
 					if(Calligraph.pageNum>6){
 						System.arraycopy(Calligraph.subMenuBtnContent2, 0, Calligraph.subContentString, 0, Calligraph.subMenuBtnContent1.length);
 						Log.i("stringsubmenubtn",Calligraph.subContentString[0][0]);
@@ -992,6 +1001,7 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 						strChapter = bgName.substring(length-8, length-4);
 					}
 					Log.i("bgname",""+bgName.substring(0,length-4));
+					Log.i("bgname",""+bgName);
 					pageXML = bgName.substring(0,bgName.length()-4);
 					
 			//		Log.i("bgname",""+pageXML);
@@ -2401,15 +2411,16 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 //				if(path.equals("/storage/extSdCard/hwimg/")){
 				if(path.equals("/storage/emulated/0/myimg")){
 					Log.i("onlyMyimg", path + "equals");
-					//Log.e("addmorepic", "found it, path = " + cursor.getString(1));
-					//Log.e("addmorepic", "name = " + cursor.getString(0));
+					Log.e("addmorepic", "found it, path = " + cursor.getString(1));
+					Log.e("addmorepic", "name = " + cursor.getString(0));
 					index = cursor.getColumnIndex(Images.ImageColumns._ID);
 					index = cursor.getInt(index);
 					name = cursor.getString(3);
-
+                   
+					Log.e("addmorepic", "name = " + name);
 					Log.e("addmorepic", "index = " + index);
 					picUri = Uri.parse("content://media/external/images/media/" + index);
-
+                    Log.v("addmorepic", ""+picUri);
 					Start.picList.add(picUri);
 					Start.picCursor.add(cursor);
 					Start.picName.add(name);
@@ -2422,7 +2433,7 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 			//String freeBg = "/mnt/sdcard/calliPics/1.jpg";
 			Uri BgPic = Start.picList.get(0);
 			bgName = Start.picName.get(0);
-			Log.i("onlyMyimg", "bgName = "+bgName + BgPic);
+			Log.i("bgnamepath", "bgName = "+bgName + BgPic);
 			
 			Bitmap bgBitmap = null;
 			BitmapFactory.Options options = new BitmapFactory.Options();

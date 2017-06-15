@@ -236,11 +236,11 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				File sdCardDir = Environment.getExternalStorageDirectory();
 				File newFile = new File(sdCardDir + File.separator + "mynewimg"
 						+ File.separator + files);
-				Log.v("zgm", "这是测试1" + newFile);
+			//	Log.v("zgm", "这是测试1" + newFile);
 				File[] filesArry= newFile.listFiles();
 
-				Log.v("zgm", "这是测试" + filesArry.length);
-				Log.v("zgm", "布尔值：" + filesArry[0].isDirectory());
+			//	Log.v("zgm", "这是测试" + filesArry.length);
+//				Log.v("zgm", "布尔值：" + filesArry[0].isDirectory());
 				for (File file : filesArry) {
 					if (file.isDirectory()) {
 
@@ -819,6 +819,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	// 动画变量 ttt cahe
 	private TextView sideText;
 	private TextView bottomText;
+	
 	private TextView finalTv;
 
 	TranslateAnimation tAniX;
@@ -1438,10 +1439,22 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 		// final DragImageView pBgImage = new DragImageView(context);
 		// indexTiMu=pageNum;
+		
 		pBgImage = new DragAndPaintView(context);
 
 		// subMenuBtnContentVersion=pBgImage.setBackGroundImage(1);
-		pBgImage.setBackGroundImage(7);
+		//MyView myView=new MyView();
+		
+		/**
+		 * 0613
+		 * 
+		 * 
+		 */
+		//MyView myView=new MyView(null, null, null, null);
+		//Log.v("MyView", "MyView.bgName："+myView.bgName);
+		pBgImage.setBackGroundImage("0944-0001-0000-0023-0003-0009-0022.jpg");
+	//	pBgImage.setBackGroundImage(7);
+		
 		// subMenuBtnContentVersion=pBgImage.indexl;
 		pBgImage.invalidate();
 
@@ -2250,7 +2263,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象conceptation
 		// conceptation = new Button(context);
 		addButton(conceptation, insideLY + 2 * blanky / 5, insideLX - band,
-				insideLY + 3 * blanky / 5, insideLX - halfband, "感念混淆",
+				insideLY + 3 * blanky / 5, insideLX - halfband, "概念混淆",
 				0xff0000ff, 0x55135901);
 
 		// 注册监听，对base按钮按下响应
