@@ -6,7 +6,7 @@
     <dimen name="top_tab_padding_drawable">8dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="thumnail_default_width">100dip</dimen>
-    <dimen name="thumnail_default_height">100dip</dimen>
+    <dimen name="thumnail_default_width">1000dip</dimen>
+    <dimen name="thumnail_default_height">300dip</dimen>
 
 </resources>

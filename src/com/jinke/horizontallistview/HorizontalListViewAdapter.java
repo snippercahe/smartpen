@@ -25,7 +25,7 @@ public class HorizontalListViewAdapter extends BaseAdapter {
 	Bitmap iconBitmap;
 
 	private int selectIndex = -1;
-	private String[] mpatharry;
+	private String[] mPathArray;
 
 //	public HorizontalListViewAdapter(Context context, int[] imagesList) {
 //		this.mContext = context;
@@ -39,11 +39,11 @@ public class HorizontalListViewAdapter extends BaseAdapter {
 		// TODO Auto-generated constructor stub
 		
 		this.mContext=context;
-		this.mpatharry=strings;
+		this.mPathArray=strings;
 		mInflater = (LayoutInflater) mContext
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);// LayoutInflater.from(mContext);	
 		
-		Log.v("zgm", "适配器创建成功1"+this.mpatharry.length);
+		Log.v("zgm", "适配器创建成功1"+this.mPathArray.length);
 		Log.v("zgm", "适配器创建成功1");
 		
 		
@@ -54,8 +54,8 @@ public class HorizontalListViewAdapter extends BaseAdapter {
 	@Override
 	public int getCount() {
 //		return mIconIDs.length;
-		Log.v("zgm","你好，你好"+ mpatharry.length);
-		return mpatharry.length;
+		Log.v("zgm","你好，你好"+ mPathArray.length);
+		return mPathArray.length;
 		
 	}
 
@@ -96,7 +96,7 @@ public class HorizontalListViewAdapter extends BaseAdapter {
 
 		// holder.mTitle.setText(mTitles[position]);
 //		iconBitmap = getPropThumnail(mIconIDs[position]);
-		iconBitmap=getThumBitmap(mpatharry[position]);
+		iconBitmap=getThumBitmap(mPathArray[position]);
 		
 		holder.mImage.setImageBitmap(iconBitmap);
 
@@ -146,13 +146,13 @@ public class HorizontalListViewAdapter extends BaseAdapter {
 		
 		
 
-		// Bitmap bb = BitmapUtil.getRoundedCornerBitmap(b, 100);
+		 Bitmap bb = BitmapUtil.getRoundedCornerBitmap(b, 100);
 		int w = mContext.getResources().getDimensionPixelOffset(
 				R.dimen.thumnail_default_width);
 		int h = mContext.getResources().getDimensionPixelSize(
 				R.dimen.thumnail_default_height);
 
-		Bitmap thumBitmap = ThumbnailUtils.extractThumbnail(b, w, h);
+		Bitmap thumBitmap = ThumbnailUtils.extractThumbnail(bb, w, h);
 
 		return thumBitmap;
 	}
