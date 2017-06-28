@@ -52,6 +52,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
@@ -624,12 +625,12 @@ public class Start extends Activity implements OnGestureListener, OnTouchListene
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-//		        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()                   
-//		        .detectDiskReads()                   
-//		        .detectDiskWrites()                   
-//		        .detectNetwork()   // or .detectAll() for all detectable problems                   
-//		        .penaltyLog()                   
-//		        .build());           
+		        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()                   
+		        .detectDiskReads()                   
+		        .detectDiskWrites()                   
+		        .detectNetwork()   // or .detectAll() for all detectable problems                   
+		        .penaltyLog()                   
+		        .build());           
 //		         StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()                   
 //		        .detectLeakedSqlLiteObjects()                   
 //		        .detectLeakedClosableObjects()                   
@@ -2241,12 +2242,16 @@ public void showUnzipDialog(){
   
 public void doZipExtractorWork(){  
     //ZipExtractorTask task = new ZipExtractorTask("/storage/usb3/system.zip", "/storage/emulated/legacy/", this, true);  
-    ZipExtractorTask task = new ZipExtractorTask("/storage/emulated/0/testzip/0944-0001-0000-0023-0003-0009-0022.zip", "/storage/emulated/0/testzip", this, true);  
+    ZipExtractorTask task = new ZipExtractorTask("/storage/emulated/0/testzip/homework.zip", "/storage/emulated/0/myimg", this, true);  
     task.execute();  
+    Uri data = Uri.parse("file://storage/emulated/0/");
+	Start.context.sendBroadcast(new Intent(
+			Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
+    
 }  
   
 private void doDownLoadWork(){  
-    DownLoaderTask task = new DownLoaderTask("http://192.168.1.115/jxyv1/Public/Uploads/0944-0001-0000-0023-0003-0009-0022.zip", "/storage/emulated/0/testzip", this);  
+    DownLoaderTask task = new DownLoaderTask("http://192.168.1.115/jxyv1/Public/homework.zip", "/storage/emulated/0/testzip", this);  
     //DownLoaderTask task = new DownLoaderTask("http://192.168.9.155/johnny/test.h264", getCacheDir().getAbsolutePath()+"/", this);  
     task.execute();  
 }  

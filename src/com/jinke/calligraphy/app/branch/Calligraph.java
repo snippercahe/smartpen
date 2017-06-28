@@ -1547,9 +1547,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 							try {
 								FileOutputStream out = new FileOutputStream(
-										"/sdcard/" + "test" + ".png");
+										"/sdcard/" + "test" + ".jpg");
 								savePigaihuanBitmap.compress(
-										Bitmap.CompressFormat.PNG, 100, out);
+										Bitmap.CompressFormat.JPEG, 100, out);
 								out.flush();
 								out.close();
 								Log.i("save", "已经保存");
@@ -4644,7 +4644,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			name = "0948 姓名： 路濤";
 		} else if (name.equals("0949")) {
 			name = "0949 姓名： 田芳";
-		}
+		} else if (name.equals("0955")) {
+			name = "0955 姓名： 周志飞";
+		} 
 		nameText.setText("学科：数学  " + " 章节：" + keshiName + "\n" + "学号：" + name);
 	}
 
@@ -5494,6 +5496,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 					Toast.makeText(mContext, "保存", Toast.LENGTH_SHORT).show();
 					v.invalidate();
 					saveScreen();
+//					File uploadFile  = new File("/sdcard/" + view.pageXML + ".png");
+//					Toast.makeText(mContext, "/sdcard/" + view.pageXML + ".png"+"    "+uploadFile, Toast.LENGTH_SHORT).show();
+//					UploadUtil.uploadFile(uploadFile, "http://192.168.1.115/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/"+view.pageXML + ".png");
 					v.invalidate();
 
 					// v.postInvalidate();
@@ -6684,7 +6689,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	public boolean saveScreen() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss",
 				Locale.US);
-		String fname = "/sdcard/" + view.pageXML + ".png";
+		String fname = "/sdcard/" + view.pageXML + ".jpg";
 		view.invalidate();
 		view.setDrawingCacheEnabled(true);
 		view.buildDrawingCache();
@@ -6759,8 +6764,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			System.out.println("bitmap got!");
 			try {
 				FileOutputStream out = new FileOutputStream(fname);
-				bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-				System.out.println("file " + fname + "outputdone.");
+				bitmap.compress(Bitmap.CompressFormat.JPEG, 30, out);
+				System.out.println("file " + fname + "outputdonezhuan .");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -6776,6 +6781,12 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// intent.setData(data);
 		// Start.context.sendBroadcast(intent);
 
+		//2017.6.19 cahe upload homework pic
+
+		
+		
+		
+		
 		return true;
 	}
 

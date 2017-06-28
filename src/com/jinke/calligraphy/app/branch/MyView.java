@@ -92,6 +92,8 @@ import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Toast;
 
+
+
 import com.jinke.calligraphy.app.branch.FreeDrawBitmap.FreeBitmapInfo;
 import com.jinke.calligraphy.data.Storage;
 import com.jinke.calligraphy.database.CDBPersistent;
@@ -237,7 +239,8 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 	
 	public MyView(Context c, Bitmap bp, Bitmap layer, WolfTemplate wt) {
 		super(c);
-		pageXML = "0944-0001-0000-0023-0003-0009-0022";
+		pageXML = "0944-0001-0000-0023-0000-0009-0022";
+		
 	
 		Log.e("storage", "MyView init storage1");
 		
@@ -948,6 +951,35 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 					Calligraph.tounaoText.setVisibility(View.GONE);
 					Calligraph.pigaiResultImageView.setVisibility(View.GONE);
 					Calligraph.pigaihuanPingyuText.setVisibility(View.GONE);
+					
+					
+			
+					
+					
+
+							//上传作业图片
+//							File uploadFile  = new File("/sdcard/" + pageXML + ".png");
+//							Toast.makeText(getContext(), "/sdcard/" + pageXML + ".png"+"    "+uploadFile, Toast.LENGTH_SHORT).show();
+						
+//					FileUploadTask task = new FileUploadTask("/storage/emulated/0/" + pageXML + ".png");
+							new Thread(new Runnable() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+//									UploadUtil.uploadFile2("/sdcard/" + pageXML + ".jpg");
+//								UpLoad.uploadFile("http://192.168.1.115/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/123","/sdcard/" + pageXML + ".jpg");	
+//								UpLoad.uploadFile("http://192.168.1.115/jxyv1/Public/index.php","/sdcard/" + pageXML + ".jpg");//已经走通了	
+//									UpLoad.uploadFile("http://192.168.1.106//thinkphp/index.php/Home/Index/upload","/sdcard/" + pageXML + ".jpg");	
+//									UploadUtil.uploadFile(new File("/sdcard/" + pageXML + ".jpg"),"http://192.168.1.106//thinkphp/index.php/Home/Index/upload");	
+									UploadUtil.uploadFile(new File("/sdcard/" + pageXML + ".jpg"),"http://192.168.1.115/jxyv1/index.php/Home/Index/upload");	
+								}
+							}).start();
+
+					
+					
+					
+					
 					//更改批改环内的背景图
 					Calligraph.pBgImage.setBackGroundImage(bgName.substring(0, bgName.length()-4));
 					
