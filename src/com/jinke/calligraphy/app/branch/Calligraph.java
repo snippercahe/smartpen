@@ -35,6 +35,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -153,7 +154,6 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	private static int recordAid;
 	private static int recordIid;
 	private static boolean isRecording;
-
 	private void initRecord() {
 		dbrListener = new DialogRecordListener();
 		// 获得sdcard路径
@@ -187,6 +187,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	public static ImageView pingyuText1;
 	public static ImageView tounaoText;
 	public static DragAndPaintView pBgImage;
+	public String inputIP=null;//用户输入的IP地址
+
+	
 
 	public int clickCount = 0;// 历史图片点击次数（双击or单击）
 
@@ -5498,7 +5501,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 					saveScreen();
 //					File uploadFile  = new File("/sdcard/" + view.pageXML + ".png");
 //					Toast.makeText(mContext, "/sdcard/" + view.pageXML + ".png"+"    "+uploadFile, Toast.LENGTH_SHORT).show();
-//					UploadUtil.uploadFile(uploadFile, "http://192.168.1.115/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/"+view.pageXML + ".png");
+//					UploadUtil.uploadFile(uploadFile, "http://192.168.1.111/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/"+view.pageXML + ".png");
 					v.invalidate();
 
 					// v.postInvalidate();

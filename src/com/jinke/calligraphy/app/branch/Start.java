@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,6 +58,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.provider.MediaStore.Images.Media;
 import android.provider.Settings;
+import android.text.StaticLayout;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -71,6 +73,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
@@ -178,6 +181,10 @@ public class Start extends Activity implements OnGestureListener, OnTouchListene
 	public static boolean netDownloadLogin = false;
 	
 	public static double auto_upload_time = 10.3;
+	
+	public static String inputIp=null;//用户输入的Ip地址
+	
+	
 	
 	//判题数据库
 	public static SQLiteDatabase db;
@@ -334,6 +341,7 @@ public class Start extends Activity implements OnGestureListener, OnTouchListene
 							Toast.LENGTH_LONG).show();
 					return;	
 				}
+				
 				Intent uploadintent = new Intent();
 				uploadintent.putExtra("type", DownloadProgressActivity.AUTO_UPLOAD);
 				uploadintent.setClass(Start.context, DownloadProgressActivity.class);
@@ -613,6 +621,12 @@ public class Start extends Activity implements OnGestureListener, OnTouchListene
 			
 		};
 	};
+	
+	 
+
+	
+	
+	
 	public static Matrix m;
 	
 	public void dismissButtom(){
@@ -636,7 +650,32 @@ public class Start extends Activity implements OnGestureListener, OnTouchListene
 //		        .detectLeakedClosableObjects()                   
 //		        .penaltyLog()                   
 //		        .penaltyDeath()                  
-//		        .build());       
+//		        .build());    
+	
+				/**
+				  * 获得输入的IP从sharedpreference中
+				 * start
+				 */	
+						        SharedPreferences preference=getSharedPreferences("inputIp",   MODE_PRIVATE); 	        
+				               inputIp=preference.getString("Ip","");
+				        if (inputIp==null) {
+				        	Toast.makeText(Start.this,"获取不到IP",Toast.LENGTH_SHORT).show();
+						}
+				        else{
+				        	Toast.makeText(Start.this,"获取的IP"+inputIp,Toast.LENGTH_SHORT).show();
+				        }
+						        
+				 /**
+				 * 获得输入的IP从sharedpreference中
+				 *end
+				 */			
+						        
+		        
+		        
+		        
+		        
+		        
+		        
 		try{
 			
 			File checkdb = new File("/sdcard/homework.db");
@@ -658,7 +697,7 @@ public class Start extends Activity implements OnGestureListener, OnTouchListene
 				DatabaseOp.clcDatabase(db);
 				Log.i("sqldb", "open");
 			}
-			
+		
 				if(instance == null){
 					Log.e("Start", "!!!!!!!!!!!!!onCreate");
 					dismissButtom();
@@ -824,7 +863,14 @@ public class Start extends Activity implements OnGestureListener, OnTouchListene
 			
 			
 		}
-		   showDownLoadDialog(); //2017.6.7
+		   
+		
+		showDownLoadDialog(); //2017.6.7
+		inPutIPDialog();		
+
+		
+		
+		
 	}
 
 	static class TT extends Thread{
@@ -2193,6 +2239,66 @@ public boolean onSingleTapUp(MotionEvent arg0) {
 	// TODO Auto-generated method stub
 	return false;
 }
+/**
+ * @author zgm
+ * @time: 20170630
+ * @describe:输入将要下载或上传的服务器的IP地址
+ * @ node:   start
+ */
+private  void inPutIPDialog(){
+	/*   @setView 装入inPutIPDialog的输入框的的view ==> R.layout.inputIpDialog.xml
+     * R.layout.inputIpDialog.xml只放置了一个EditView，
+     * R.layout.inputIpDialog.xml可自定义更复杂的View*/
+	
+	
+	
+	
+	
+	AlertDialog.Builder customizeDialog = 
+            new AlertDialog.Builder(Start.this);
+     final View dialogView = LayoutInflater.from(Start.this)
+            .inflate(R.layout.input_ip_dialog,null);
+        customizeDialog.setTitle("请输入要连接设备的IP地址");
+        customizeDialog.setView(dialogView);
+        final EditText edit_text = 
+                (EditText) dialogView.findViewById(R.id.edit_text);
+            if (inputIp!=null) {
+            	edit_text.setText(inputIp);
+            	 Log.v("ceshi", "不空");
+    			
+    		}
+            else {
+				edit_text.setText("还没有要连接的设备");
+				 Log.v("ceshi", "空的");
+			}
+            Log.v("ceshi", "你好");
+
+        customizeDialog.setPositiveButton("确定",
+            new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            	SharedPreferences.Editor editor= getSharedPreferences("inputIp", MODE_PRIVATE).edit();
+            	
+            	
+                // 获取EditView中的输入内容
+                Toast.makeText(Start.this,
+                    edit_text.getText().toString(),
+                    Toast.LENGTH_SHORT).show();
+           String getInPut= edit_text.getText().toString(); 
+           if (getInPut!=null) {
+        	   editor.putString("Ip", getInPut);
+        	    editor.commit();
+        	  
+		}
+           else return;
+  
+            }
+        });
+
+        customizeDialog.show();
+
+	}
+
 
 private void showDownLoadDialog(){  
     new AlertDialog.Builder(this).setTitle("确认")  
@@ -2251,7 +2357,7 @@ public void doZipExtractorWork(){
 }  
   
 private void doDownLoadWork(){  
-    DownLoaderTask task = new DownLoaderTask("http://192.168.1.115/jxyv1/Public/homework.zip", "/storage/emulated/0/testzip", this);  
+    DownLoaderTask task = new DownLoaderTask("http://"+inputIp+"/jxyv1/Public/homework.zip", "/storage/emulated/0/testzip", this);  
     //DownLoaderTask task = new DownLoaderTask("http://192.168.9.155/johnny/test.h264", getCacheDir().getAbsolutePath()+"/", this);  
     task.execute();  
 }  

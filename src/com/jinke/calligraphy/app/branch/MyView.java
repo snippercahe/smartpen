@@ -968,11 +968,13 @@ public class MyView extends View implements ColorPickerDialog.OnColorChangedList
 								public void run() {
 									// TODO Auto-generated method stub
 //									UploadUtil.uploadFile2("/sdcard/" + pageXML + ".jpg");
-//								UpLoad.uploadFile("http://192.168.1.115/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/123","/sdcard/" + pageXML + ".jpg");	
-//								UpLoad.uploadFile("http://192.168.1.115/jxyv1/Public/index.php","/sdcard/" + pageXML + ".jpg");//已经走通了	
+//								UpLoad.uploadFile("http://192.168.1.111/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/123","/sdcard/" + pageXML + ".jpg");	
+//								UpLoad.uploadFile("http://"+Start.inputIp+"/jxyv1/Public/index.php","/sdcard/" + pageXML + ".jpg");//已经走通了	
+								UpLoad.uploadFile("http://"+Start.inputIp+"/thinkphp/index.php/Home/Index/upload","/sdcard/" + pageXML + ".jpg");//已经走通了	
 //									UpLoad.uploadFile("http://192.168.1.106//thinkphp/index.php/Home/Index/upload","/sdcard/" + pageXML + ".jpg");	
 //									UploadUtil.uploadFile(new File("/sdcard/" + pageXML + ".jpg"),"http://192.168.1.106//thinkphp/index.php/Home/Index/upload");	
-									UploadUtil.uploadFile(new File("/sdcard/" + pageXML + ".jpg"),"http://192.168.1.115/jxyv1/index.php/Home/Index/upload");	
+//									UploadUtil.uploadFile(new File("/sdcard/" + pageXML + ".jpg"),"http://192.168.1.111/jxyv1/index.php/Home/Index/upload");	
+		
 								}
 							}).start();
 

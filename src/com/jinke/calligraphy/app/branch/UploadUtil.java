@@ -42,7 +42,7 @@ public class UploadUtil {
         String  BOUNDARY =  UUID.randomUUID().toString();  //边界标识   随机生成
         String PREFIX = "--" , LINE_END = "\r\n"; 
         String CONTENT_TYPE = "multipart/form-data";   //内容类型
-
+       Log.e(TAG, "HAHA");
         try {
             URL url = new URL(RequestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -98,10 +98,10 @@ public class UploadUtil {
                  * 获取响应码  200=成功
                  * 当响应成功，获取响应的流  
                  */
-               // int res = conn.getResponseCode();  
-             //   Log.e(TAG, "response code:"+res);
-//                if(res==200)
-//                {
+             int res = conn.getResponseCode();  
+              Log.e(TAG, "response code:"+res);
+             if(res==200)
+               {
                     Log.e(TAG, "request success");
                     InputStream input =  conn.getInputStream();
                     StringBuffer sb1= new StringBuffer();
@@ -111,11 +111,9 @@ public class UploadUtil {
                         sb1.append((char)ss);
                     }
                     result = sb1.toString();
-                    Log.e(TAG, "result : "+ result);
-//                }
-//                else{
-//                    Log.e(TAG, "request error");
-//                }
+                    Log.e(TAG, "result : "+ result);                }
+               else{
+                   Log.e(TAG, "request error");               }
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -141,8 +139,8 @@ public class UploadUtil {
             // 定义数据分隔线
             String BOUNDARY = "========7d4a6d158c9"; 
             // 服务器的域名
-//            URL url = new URL("http://192.168.1.115/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/"+fileName.substring(8, fileName.length()-4));
-            URL url = new URL("http://192.168.1.115/jxyv1/Public/index.php");
+//            URL url = new URL("http://192.168.1.111/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/"+fileName.substring(8, fileName.length()-4));
+            URL url = new URL("http://192.168.1.111/jxyv1/Public/index.php");
 //       
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             // 设置为POST情
@@ -286,8 +284,8 @@ public static void uploadFile2(String uploadFile)
       
       
       srcPath = uploadFile;
-//      String uploadUrl="http://192.168.1.115/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/"+uploadFile.substring(8, uploadFile.length()-4);
-      String uploadUrl="http://192.168.1.115/jxyv1/Public/index.php";
+//      String uploadUrl="http://192.168.1.111/jxyv1/index.php/Home/Index/checkedHomeWorkUpload/filename/"+uploadFile.substring(8, uploadFile.length()-4);
+      String uploadUrl="http://192.168.1.111/jxyv1/Public/index.php";
        try  
       {  
         URL url = new URL(uploadUrl);  
