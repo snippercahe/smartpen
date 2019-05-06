@@ -29,7 +29,7 @@ public class UpLoadTask extends AsyncTask<Void, Integer, Long>{
 	Start activity;
 	private  final char HEX_DIGITS[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 			'a', 'b', 'c', 'd', 'e', 'f' };
-	private ProgressDialog mDialog;
+	public ProgressDialog mDialog;
 	public String dialogmessage="云端存储文件中，任何操作均无效";
 	private Context mContext;
 	String uploadUrl="http://118.24.109.3/Public/smartpen/uploadmd5.php";
@@ -78,7 +78,7 @@ public class UpLoadTask extends AsyncTask<Void, Integer, Long>{
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					((Start) mContext).showSound(R.raw.in);
+//					((Start) mContext).showSound(R.raw.in);
 				}
 			};
 			timer.schedule(timerTask,0,300); 
@@ -121,8 +121,8 @@ public class UpLoadTask extends AsyncTask<Void, Integer, Long>{
 		timer.cancel();
 //		if (mresult.equals("The file "+srcPath.substring(srcPath.lastIndexOf("/")+1)+" has been uploaded")) {
 		if (mresult.equals(md5)) {
-			((Start) mContext).showSound(R.raw.upload_sucess);
-			((Start) mContext).showToast("上传成功");
+			((Start) mContext).showSound(R.raw.upload_success_comment);
+			((Start) mContext).showToast("教师评语最小微课提交成功");
 			Message message=new Message();
 			message.what=402;//文件传输无误，停止计时
 			((Start) mContext).transHandler.sendMessage(message);

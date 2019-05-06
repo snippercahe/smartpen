@@ -3684,10 +3684,12 @@ public void doUpLoadTask(final String srcPath) {
 					timerInStartActivity.cancel();
 					timerInStartActivity.purge();
 					timerInStartActivity=null;
+					upLoadTask.mDialog.dismiss();
 					showToast("文件校验有问题,云端存储失败");
 					showSound(R.raw.upload_fail);
 					reupLoadCounter=0;
 					dealingSomeThing=false;
+				   this.cancel();
 				}
 			}
 	    }  

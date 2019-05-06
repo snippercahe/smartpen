@@ -7634,6 +7634,7 @@ public void setTrans(int situation, float y){
 								+ "");
 				statisticTextView[currentItem - 1]
 						.setText(text);
+				setTransparentStatisticView(statisticTextView[currentItem - 1]);
 				break;
 			case 4:
 				question[currentItem - 1].weird2++;
