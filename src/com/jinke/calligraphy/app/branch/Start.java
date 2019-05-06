@@ -1045,8 +1045,17 @@ public static  ArrayList<Integer> tag = new ArrayList<Integer>();
 					}
 					
 				}
-				if(pigaihuanDotsContainer.get(gCurPageID).get(0)!=null)
-				pigaihuanDotsContainer.get(gCurPageID).get(0).type=DotType.PEN_DOWN;
+				
+				try {
+					if(pigaihuanDotsContainer.get(gCurPageID).get(0)!=null)
+						pigaihuanDotsContainer.get(gCurPageID).get(0).type=DotType.PEN_DOWN;
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+
 //				Log.i("replay","replay0"+pigaihuanDotsContainer.get(gCurPageID).get(0).type);
 //				Log.i("replay","replay1"+pigaihuanDotsContainer.get(gCurPageID).get(1).type);
 				
