@@ -558,7 +558,7 @@ public void initDate(WolfTemplate wt) {
 //    	}
     	else{
 	    	cal_current.end();
-	    	Log.e("mindend", "forward");
+//	    	Log.e("mindend", "forward");
 	    	PreUpdateHandwriteStateFlip();
 	    	cal_current.setFlipDst(true,"insertEndOfLine");
 	    	updateHandwriteStateFlip();

@@ -135,7 +135,7 @@ public class Dwview extends View {
 		//mpaint.setStrokeWidth(3);
 
 		// 绘制批改环绿色带
-		mpaint.setColor(0x66008b00);// 设置画笔颜色
+		mpaint.setColor(0xee153013);// 设置画笔颜色
 		mpaint.setStrokeWidth((float) band);// 设置线宽,300为绿色带的边宽，表格宽为200；
 		mpaint.setStyle(Style.STROKE);// 设置画笔为空心
 		// canvas.drawCircle(40, 40, 30,mpaint);//画实验圆
@@ -215,7 +215,7 @@ public class Dwview extends View {
 		canvas.drawLine(insiderx+halfband, insidely+3*blanky/5, outsiderx,insidely+3*blanky/5, mpaint);// 720=560+180
 		canvas.drawLine(insiderx+halfband, insidely+4*blanky/5, outsiderx, insidely+4*blanky/5, mpaint);// 900=720+180
 
-		mpaint.setColor(Color.BLACK);
+		mpaint.setColor(Color.WHITE);
 		mpaint.setTextSize(band*45/200);
 		// 画出上边表格表头字符串
 		canvas.drawText("缺陷等", outsidelx+band*65/200,  outsidely+band*50/200, mpaint);

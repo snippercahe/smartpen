@@ -271,7 +271,10 @@ public class DownloadProgressActivity extends Activity {
 
 		
 		if(type == AUTO_UPLOAD)
-			Start.kanboxUploadHandler.sendEmptyMessage(0);
+//		
+			//屏蔽掉奇怪的
+//			Start.kanboxUploadHandler.sendEmptyMessage(0);
+			return;
 
 	}
 

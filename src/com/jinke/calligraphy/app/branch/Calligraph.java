@@ -27,6 +27,7 @@ import org.jsoup.select.Elements;
 
 import android.R.integer;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Instrumentation;
@@ -51,9 +52,11 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -94,6 +97,7 @@ import com.jinke.calligraphy.template.WolfTemplateUtil;
 import com.jinke.calligraphy.touchmode.HandWriteMode;
 import com.jinke.calligraphy.touchmode.SideDownMode;
 import com.jinke.calligraphy.touchmode.TouchMode;
+import com.jinke.downloadanddecompression.DownLoaderTask;
 import com.jinke.horizontallistview.HorizontalListView;
 import com.jinke.horizontallistview.HorizontalListViewAdapter;
 import com.jinke.mindmap.MindMapItem;
@@ -105,6 +109,8 @@ import com.jinke.mywidget.widget.Panel.OnPanelListener;
 import com.jinke.single.BitmapCount;
 import com.jinke.single.LogUtil;
 import com.jinke.single.ScaleSave;
+import com.jinke.smartpen.DrawView;
+import com.jinke.smartpen.ToolFun;
 
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.Animation;
@@ -113,7 +119,7 @@ import android.view.animation.TranslateAnimation;
 
 public class Calligraph extends RelativeLayout implements OnPanelListener,
 		OnClickListener {
-
+	Start activity;
 	final static int POPUP_VIEW_FACE = 1;
 	final static int POPUP_VIEW_WEATHER = 2;
 	private final File mStoreFile = new File(
@@ -178,6 +184,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	public FrameLayout gesLayout;
 	public RelativeLayout transParentStatisticLayout;
 	public static RelativeLayout pigaihuanLayout;
+	public static ImageView ansHintIV;
 	public static TextView nameText;
 	public static TextView pageText;
 	public static TextView staticText;
@@ -187,29 +194,34 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	public static ImageView pingyuText1;
 	public static ImageView tounaoText;
 	public static DragAndPaintView pBgImage;
-	public String inputIP=null;//用户输入的IP地址
-
+	public static DrawView drawView;
+	public static TextView totalTimeTv;
+	public Button replayBtn;
+	public String inputIP="123.206.16.114";//用户输入的IP地址
+   
 	
 
 	public int clickCount = 0;// 历史图片点击次数（双击or单击）
 
-	public static BorderTextView[] statisticTextView;
-
-	public static String keshiName = "第二十二章 二次函数      ";
+	public static BorderTextView[] statisticTextView;//透明统计条
+	public static TextView[] commentsTv;//0426
+	public  TextView recordTime;//0426
+	public static String keshiName = "第五章相交线与平行线 ";
 	public static String name = "0944 姓名：陈程";
 	public static int pageNum = 1;
 	public int indexTiMu = 1;
-	public static int pageTotal = 6;
-
+	public static int pageTotal = 4;
+    public static int unrevisedCount = 3;
 	public static int currentItem = 0;
 	private GestureLibrary gestureLib;// 创建一个手势仓库
+	public static String comments = "";//0426用于保存批改环点选的评语，显示在主界面上
 
 	public static ImageView pigaiResultImageView;
 	// public static HorizontalListView hListView1;
 	public static HorizontalListView[] hListView = new HorizontalListView[5];
 
-	final static int unclick = 0x55135901;
-	final static int click = 0xff00ffff;
+	final static int unclick = 0xff18499d;
+	final static int click = 0xff000080;
 	
 
 	/*
@@ -506,6 +518,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 	private static final int DRAW_STATUS_BTN_ID = 1;
 	private static final int PEN_STATUS_BTN_ID = 2;
+	public static int sceneSituation = 0;
 
 	public static Button flipblockBtn;
 	public static Button flipblockHBtn;
@@ -588,8 +601,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	/**
 	 * 2016.12.20 zgm
 	 */
-	private int subMenuTextColor = 0Xffff0000;
-	private int subMenuBackgroundColor = 0xff00ffff;
+	private int subMenuTextColor = 0Xfffffff8;
+	private int subMenuBackgroundColor = 0xff18499d;
 
 
 	// *******************************批改环上表格历史判断类型计数器****************************************
@@ -612,7 +625,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			"历史统计：" + "4" + "\n" + "本次统计：" + halfwrong1Counter,
 			"历史统计：" + "3" + "\n" + "本次统计：" + halfwrong2Counter,
 			"历史统计：" + "2" + "\n" + "本次统计：" + halfwrong3Counter,
-			"历史统计：" + "7" + "\n" + "本次统计：" + wrongCounter };
+			"历史统计：" + "2" + "\n" + "本次统计：" + wrongCounter };
 
 	// *****************************************judgeresultlabel判决结果对应计数器加1，对应标签置为1*************************************
 	private int[] judgeresultlabel = new int[] { 0, 0, 0, 0, 0 };
@@ -630,64 +643,64 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	// "a的作用不懂",
 	// "b的作用不懂", "c的作用不懂", "二次函数的形式不会区分" };
 
-	private Button[] subMenuBtnLB_array = new Button[5];
+	public static Button[] subMenuBtnLB_array = new Button[5];
 	// private String[] subContentString[1] = new String[] { "自变量定义不懂",
 	// "因变量定义不会",
 	// "等式变换不熟", "乘法运算法则不熟", "加法运算法则不熟" };
 
-	private Button[] subMenuBtnLC_array = new Button[5];
+	public static Button[] subMenuBtnLC_array = new Button[5];
 	// private String[] subContentString[2] = new String[] { "自变量和因变量混淆",
 	// "左移右移符号混淆", "a,b作用混淆",
 	// "a,c作用混淆", "b,c作用混淆" };
 
-	private Button[] subMenuBtnLM_array = new Button[5];
+	public static Button[] subMenuBtnLM_array = new Button[5];
 	// private String[] subContentString[3] = new String[] { "开口方向没记住",
 	// "是否过原点没记住",
 	// "单调性没记住", "图像缩放没记住", "图像平移没记住" };
 
-	private Button[] subMenuBtnLT_array = new Button[5];
+	public static Button[] subMenuBtnLT_array = new Button[5];
 	// private String[] subContentString[4] = new String[] { "哪三种形式", "h的作用是什么",
 	// "k的作用是什么", "参数的关系是什么", "函数零点与方程的解什么关系" };
 
-	private Button[] subMenuBtnBE_array = new Button[5];
+	public static Button[] subMenuBtnBE_array = new Button[5];
 	// private String[] subContentString[5] = new String[] { "a大于零图像会怎样",
 	// "如何解方程",
 	// "b=0函数图像会怎样", "对称轴怎么求", "c的作用是什么" };
 
-	private Button[] subMenuBtnBI_array = new Button[5];
+	public static Button[] subMenuBtnBI_array = new Button[5];
 	// private String[] subContentString[6] = new String[] { "加油", "你很聪明",
 	// "很有潜力", "很棒", "大红花" };
 
-	private Button[] subMenuBtnBEx_array = new Button[5];
+	public static Button[] subMenuBtnBEx_array = new Button[5];
 	// private String[] subContentString[7] = new String[] { "仔细审题", "认真听课",
 	// "灵活运用", "再接再厉", "要有耐心" };
 
-	private Button[] subMenuBtnBD_array = new Button[5];
+	public static Button[] subMenuBtnBD_array = new Button[5];
 	// private String[] subContentString[8] = new String[] { "要有耐心", "弄懂参数的关系",
 	// "图象的位置", "两个交点会怎样", "一个交点会怎样" };
 
-	private Button[] subMenuBtnBM_array = new Button[5];
+	public static Button[] subMenuBtnBM_array = new Button[5];
 	// private String[] subContentString[9] = new String[] { "多做题", "将概念吃透",
 	// "认真看书", "多多交流", "学习方法" };
 
-	private Button[] subMenuBtnRW_array = new Button[5];
+	public static Button[] subMenuBtnRW_array = new Button[5];
 	// private String[] subContentString[10] = new String[] { "字体潦草", "书写要认真",
 	// "需要练字",
 	// "写字要横平竖直", "字迹不清楚清楚" };
 
-	private Button[] subMenuBtnRE_array = new Button[5];
+	public static Button[] subMenuBtnRE_array = new Button[5];
 	// private String[] subContentString[11] = new String[] { "表述不清", "字句不通",
 	// "要组织好语言", "想好在下笔", "看书上怎写" };
 
-	private Button[] subMenuBtnRT_array = new Button[5];
+	public static Button[] subMenuBtnRT_array = new Button[5];
 	// private String[] subContentString[12] = new String[] { "多做题", "方法细节不会",
 	// "多总结", "勤加练习", "请教他人" };
 
-	private Button[] subMenuBtnRU_array = new Button[5];
+	public static Button[] subMenuBtnRU_array = new Button[5];
 	// private String[] subContentString[13] = new String[] { "答题完整", "结果要化简",
 	// "注意格式", "认真书写", "结果化成小数" };
 
-	private Button[] subMenuBtnRA_array = new Button[5];
+	public static Button[] subMenuBtnRA_array = new Button[5];
 
 	// private String[] subContentString[14] = new String[] { "仔细审题", "重视每一个条件",
 	// "沉下心去",
@@ -865,15 +878,16 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			int backgroundcolor) {
 
 		buttonName.setText(text);
+		buttonName.setPadding(0, 0, 0, 0);
 		//
-		// buttonName.setTextColor(0xff0000ff);
+		// buttonName.setTextColor(0xfffffffe);
 		buttonName.setTextColor(textcolor);
 		buttonName.setTextSize(15);
 		// buttonName.setBackgroundColor(0x55135901);
 		buttonName.setBackgroundColor(backgroundcolor);
 		RelativeLayout.LayoutParams buttonNamep = new RelativeLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
+		
 		buttonNamep.topMargin = (int) (top);
 		buttonNamep.leftMargin = (int) left;
 		buttonNamep.rightMargin = (int) (1600 - right);
@@ -895,6 +909,17 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		imageNamep.rightMargin = (int) (1600 - right);
 		pigaihuanLayout.addView(imageName, imageNamep);
 
+	}
+	private void addView(View v,float top, float left,
+			float bottom, float right) {
+		RelativeLayout.LayoutParams viewLayoutInParent = new RelativeLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		viewLayoutInParent.topMargin = (int) top;
+		viewLayoutInParent.leftMargin = (int) left;
+//		imageNamep.bottomMargin = (int) (2400 - bottom);
+//		imageNamep.rightMargin = (int) (1600 - right);
+		pigaihuanLayout.addView(v, viewLayoutInParent);
+		
 	}
 
 	// private void historypicturearry(){
@@ -926,14 +951,22 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	public Panel panel;
 	public static boolean wifiandadhocPause = false;
 	public boolean firstTransformPicFromMobile = true;
-	public String judge = "weird";
+	//0122将judge改为static   cahe
+	public static String judge = "weird";
+	public static int situation = 0;
 	private long start = 0;
 	private long end = 0;
-	public int totalQuestion = 0;
+	public static int totalQuestion = 0;
 	public static Document doc;
 	public static String pagecXML = "demo.xml";
+//	public static String pagecXML = "demo2.2.xml";
 	public static File file = new File("/sdcard/" + pagecXML);
-
+	public static double [] pos;
+	public  Question question[];//0425
+	  Elements elementResult;
+	  Elements elementComment;
+	  public MyClickListener mClickListener=new MyClickListener();
+	  //0122
 	// 2016.4.11评语句子
 	public static String[] commentString = { "再深入了解下函数二次项系数性质，你会做得更好",
 			"作业整体非常好，对一般式要再深入了解下", "知识把握很好，要特别注意等号两边都是整式",
@@ -999,6 +1032,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// FileOutputStream fos=null;
 
 		Log.i("pageXML", "pageC:" + pagecXML);
+//解析xml模板		
 		try {
 			doc = Jsoup.parse(file, "UTF-8");
 
@@ -1007,19 +1041,26 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			e.printStackTrace();
 		}
 		Log.i("pageXML", "" + view.pageXML);
-		Elements element = doc.getElementsByTag("ystart");
-		final Elements elementResult = doc.getElementsByTag("result");
-		final Elements elementComment = doc.getElementsByTag("comment");
+		Elements element = doc.getElementsByTag("ystart");//解析xml模板
+//		final Elements elementResult = doc.getElementsByTag("result");
+//		final Elements elementComment = doc.getElementsByTag("comment");
+		elementResult = doc.getElementsByTag("result");
+	    elementComment = doc.getElementsByTag("comment");
+		//0122
 		totalQuestion = element.size();
+		
 		// Log.i("totalquestion",""+element);
-		final int[] pos = new int[totalQuestion];
-		final Question question[] = new Question[totalQuestion];
+//		final double [] pos = new double[totalQuestion];
+		 pos = new double[totalQuestion];
+		//0122
+//		final Question question[] = new Question[totalQuestion];
+		 question = new Question[totalQuestion];
 		Log.i("sqldb", "tq = " + totalQuestion);
 		for (int i = 0; i < totalQuestion; i++) {
 			question[i] = new Question();
 			Log.i("sqldb", "init question " + question[i].right);
-			int[] result = { 0, 0, 0, 0, 0 };
-			result = DatabaseOp.readDatabase(Start.db, i);
+			int[] result = { 15, 4, 3, 2, 2 };
+//			result = DatabaseOp.readDatabase(Start.db, Start.gCurPageID,i);
 			question[i].right = result[0];
 			question[i].wrong = result[1];
 			question[i].weird = result[2];
@@ -1030,28 +1071,34 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 		}
 		for (int i = 0; i < totalQuestion; i++) {
-
 			pos[i] = Integer.valueOf(element.get(i).text().toString());
+			pos[i] *= 11.0;
 			Log.i("totalquestion", "" + totalQuestion + "\n");
 		}
 
 		// 2016.3.30统计层 caoheng
 		transParentStatisticLayout = new RelativeLayout(context);
-		LayoutParams tpsLp = new LayoutParams(1600, 2500);
+		LayoutParams tpsLp = new LayoutParams((int)Start.mWidth, (int) Start.mHeight);
 
 		// transParentStatisticLayout.setBackgroundColor(Color.BLUE);
 		statisticTextView = new BorderTextView[totalQuestion];
-		for (int i = 0; i < totalQuestion; i++) {
+		commentsTv = new TextView[totalQuestion];//0426
+		for (int i = 0; i < totalQuestion-1; i++) {
 			statisticTextView[i] = new BorderTextView(context);
-			LayoutParams stvLp = new LayoutParams(400, 100);
+			commentsTv[i] = new TextView(context);//0426
+			LayoutParams stvLp = new LayoutParams(900, 100);
 			// nameLp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			stvLp.setMargins(1200,
-					Integer.valueOf(element.get(i).text().toString()), 1500,
-					2700 - Integer.valueOf(element.get(i).text().toString()));
+			stvLp.setMargins(700,
+					(int)((Integer.valueOf(element.get(i).text().toString()))*13.5), 1500,
+					2600 - (int)(Integer.valueOf(element.get(i).text().toString())*11.0));
 			// stvLp.topMargin =
 			// Integer.valueOf(element.get(i).text().toString());
 			statisticTextView[i].setGravity(Gravity.CENTER_VERTICAL);
-			statisticTextView[i].setVisibility(View.VISIBLE);
+//			statisticTextView[i].setText("--------"+i+"----------");
+			//透明统计条一直可见
+			statisticTextView[i].setBackgroundResource(R.drawable.st);
+
+			statisticTextView[i].setVisibility(View.GONE);
 			// 2016.4.1 统计条效果
 			// if(i%2==0)statisticTextView[i].setBackgroundColor(Color.RED);
 			// if(i==5)statisticTextView[i].setTextColor(Color.BLUE);
@@ -1078,8 +1125,10 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			}
 		});
 
-		// 手势识别的监听器
-		gestures.addOnGestureListener(new GestureView.OnGestureListener() {
+		// 手势识别的监听器0122
+//		gestures.addOnGestureListener(null);
+		gestures.addOnGestureListener(mClickListener);
+/*		gestures.addOnGestureListener(new GestureView.OnGestureListener() {
 
 			// 2016.4.12解决不同笔画数手势问题
 			int lastStrokeCount;
@@ -1107,7 +1156,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 									.recognize(overlay.getGesture());
 							if (predictionswr.size() > 0) {
 								Prediction prediction = (Prediction) predictionswr
-										.get(0);
+										.get(0);//hu
 								if (prediction.score > 2) {
 									judge = prediction.name;
 									if (judge.equals("Almost"))
@@ -1160,6 +1209,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 						default:
 							lastStrokeCount = 0;
 						}
+//switch到这结束						
 						int situation = 5;
 
 						if (judge.equals("Right"))
@@ -1386,7 +1436,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				this.event = event;
 				Log.i("prediction", "y=" + yy);
 				handler.postDelayed(runnable, 1500);
-
+//0122
 			}
 
 			@Override
@@ -1397,11 +1447,27 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			}
 
 		});
-
+*/
 		if (gestureLib == null) {
 			gestureLib = GestureLibraries.fromFile(mStoreFile);
 			gestureLib.load();
 		}
+		
+		
+		
+		/** 
+		 * 加入答案提示图20190418
+		 */
+
+		ansHintIV = new ImageView(context);
+		Bitmap ansBg = BitmapFactory.decodeFile("/storage/emulated/0/ansHint/demodaan.png").copy(
+				Bitmap.Config.ARGB_4444, true);;
+	    ansHintIV.setImageBitmap(ansBg);
+		ansHintIV.setVisibility(View.GONE);
+		this.addView(ansHintIV);
+		
+		
+		
 
 		/**
 		 * 2016.12.12 zgm pigaihuan
@@ -1416,7 +1482,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		this.addView(pigaihuanLayout);
 		pigaihuanLayout.addView(dwview, pigaihuanLp);
 		pigaihuanLayout.setVisibility(View.GONE);
-
+//       DrawView dView=new DrawView(context);
+//       addV
 		// cahe 2016.12.3加二级字和背景图片
 
 		// pigaihuanSubText = new TextView(context);
@@ -1445,7 +1512,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// indexTiMu=pageNum;
 		
 		pBgImage = new DragAndPaintView(context);
-
+       drawView= new DrawView(context);
 		// subMenuBtnContentVersion=pBgImage.setBackGroundImage(1);
 		//MyView myView=new MyView();
 		
@@ -1456,6 +1523,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		 */
 		//MyView myView=new MyView(null, null, null, null);
 		//Log.v("MyView", "MyView.bgName："+myView.bgName);
+//		pBgImage.setBackGroundImage("0944-0001-0000-0023-0003-0009-0022");
 		pBgImage.setBackGroundImage("0944-0001-0000-0023-0003-0009-0022");
 //		pBgImage.setBackGroundImage(MyView.bgName.substring(0, MyView.bgName.length()-4));
 		
@@ -1463,7 +1531,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		
 		// subMenuBtnContentVersion=pBgImage.indexl;
 		pBgImage.invalidate();
-
+		pBgImage.setPadding(0, 0, 0, 0);
+		drawView.setScaleType(ScaleType.MATRIX);
 		pBgImage.setScaleType(ScaleType.MATRIX);
 
 		RelativeLayout.LayoutParams imLp = new RelativeLayout.LayoutParams(
@@ -1478,14 +1547,57 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// pBgImage.setImageBitmap(pghPic);
 
 		pigaihuanLayout.addView(pghBgLayout, pghBgLp);
+		
+		//0426批改环内添加显示学生作答时间TextView
+		totalTimeTv = new TextView(context);
+		RelativeLayout.LayoutParams ttttLp = new RelativeLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+	
+		ttttLp.topMargin = 1800;
+		ttttLp.leftMargin = 350;
+		ttttLp.bottomMargin = 800;
+//		ttttLp.rightMargin = 0;
+		pigaihuanLayout.addView(totalTimeTv,ttttLp);
+		totalTimeTv.setText("此题共用时"+Start.timePerItem+"分钟");
+		totalTimeTv.setTextSize(26);
+		totalTimeTv.setTextColor(Color.MAGENTA);
+		totalTimeTv.setVisibility(View.VISIBLE);
+		
+
+		//0430添加点击回放按钮
+		replayBtn = new Button(context);
+		replayBtn.setBackgroundResource(R.drawable.replaybtnbg);
+//		replayBtn.setText("笔迹回放");
+		RelativeLayout.LayoutParams rbtnLp = new RelativeLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		rbtnLp.topMargin = 1750;
+		rbtnLp.leftMargin = 200;
+		rbtnLp.bottomMargin = 500;
+		rbtnLp.rightMargin = 1250;
+		
+		replayBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Message msg = new Message();
+				msg.what = 52;
+				activity.transHandler.sendMessage(msg);
+				my_toast("replay button");
+			}
+		});
+		
 
 		// PaintView pghPaintView = new PaintView(context, 1200, 1000);
 		// pghPaintView.setBackgroundColor(Color.BLUE);
 		// LayoutParams pghPVLp = new RelativeLayout.LayoutParams(
 		// LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		//0430底下两行会报错，先删掉
 		pghBgLayout.addView(pBgImage, imLp);
+		pghBgLayout.addView(drawView, imLp);
 		// pghBgLayout.addView(pghPaintView, pghPVLp);
 		pBgImage.setEnabled(true);
+		drawView.setEnabled(true);
 		// pghPaintView.setEnabled(true);
 		savePigaihuanBitmap = Bitmap.createBitmap(1200, 1000, Config.ARGB_8888);
 		pigaihuanSaveCanvas = new Canvas(savePigaihuanBitmap);
@@ -1514,7 +1626,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		pigaihuanPingyuText.setTextSize(30);
 		pigaihuanPingyuText.setTextColor(Color.RED);
 		pigaihuanPingyuText.setVisibility(View.GONE);
-
+		
 		// pigaihuanLayout.setBackgroundColor(Color.BLACK);
 		final List<Long> clickTimes = new ArrayList<Long>();
 		pigaihuanLayout.setOnTouchListener(new OnTouchListener() {
@@ -1531,6 +1643,10 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 								- clickTimes.get(0) < 200) {
 							pigaihuanLayout.setVisibility(View.GONE);
 
+							
+							
+							
+							
 							// 批改环的痕迹保存到Myview上 cahe 2017.1.7
 							pigaiResultImageView.setVisibility(VISIBLE);
 							DragAndPaintView.mBitmap = Bitmap.createBitmap(
@@ -1593,6 +1709,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		//
 
 		pigaihuanGestures.setUncertainGestureColor(Color.RED);
+		pigaihuanLayout.addView(replayBtn,rbtnLp);
 
 		// **************************************************模拟点击事件*******************************************************************
 
@@ -1843,7 +1960,6 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// gestureLib = GestureLibraries.fromFile(mStoreFile);
 		// gestureLib.load();
 		// }
-
 		/**
 		 * 2016.12.20 zgm 说明：将以上内容注释掉了，添加新代码如下
 		 */
@@ -1896,7 +2012,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 		}
 		// *****************************************historyImages[0] 的监听器*****************************************************
-		
+		//不让弹出hlistview
 		
 		for (int btnCount = 0; btnCount < 5; btnCount++) {
             final int count=btnCount;
@@ -1905,7 +2021,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					my_toast(String.valueOf(count));
+//					my_toast(String.valueOf(count));
 					if (historyListViewVisibilityFlag == 0) {
 						historyListViewVisibilityFlag = 1;
 						historyImages[count].setBackgroundColor(0x55008b00);
@@ -1917,6 +2033,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 							else {
 								hListView[i].setVisibility(VISIBLE);
 								historyImages[i].setVisibility(VISIBLE);
+							
 							}
 						}
 					}
@@ -1924,6 +2041,10 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 						hListView[count].setVisibility(GONE);
 						historyImages[count].setBackgroundColor(Color.TRANSPARENT);
 						historyListViewVisibilityFlag = 0;
+//						hListView[count].setAdapter(null);
+						postInvalidate();
+						System.gc();
+						
 					}
 				};
 			});
@@ -1935,7 +2056,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// **********************************************新建button对象history1F************************************************
 				history1 = new Button(context);
 				addButton(history1, insideLY - halfband, insideLX, insideLY, insideLX
-						+ blankx / 5, judgeHistory[0], 0xff0000ff, 0x55135901);
+						+ blankx / 5, judgeHistory[0], 0xfffffffe, 0x55135901);
 				// 注册监听，对history1按钮按下响应
 				history1.setTextSize(14);
 
@@ -1962,6 +2083,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 							Log.i("hListView", "3：" + historyListViewVisibilityFlag);
 							historyListViewVisibilityFlag = 0;
+						
 							Log.i("hListView", "4：" + historyListViewVisibilityFlag);
 						}
 
@@ -1981,7 +2103,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				history2 = new Button(context);
 				addButton(history2, insideLY - halfband, insideLX + blankx / 5,
 						insideLY, insideLX + 2 * blankx / 5, judgeHistory[1],
-						0xff0000ff, 0x55135901);
+						0xfffffffe, 0x55135901);
 				history2.setTextSize(14);
 		
 		
@@ -2028,7 +2150,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		history3 = new Button(context);
 		addButton(history3, insideLY - halfband, insideLX + 2 * blankx / 5,
 				insideLY, insideLX + 3 * blankx / 5, judgeHistory[2],
-				0xff0000ff, 0x55135901);
+				0xfffffffe, 0x55135901);
 		history3.setTextSize(14);
 
 		// 注册监听，对history3按钮按下响应
@@ -2071,7 +2193,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		history4 = new Button(context);
 		addButton(history4, insideLY - halfband, insideLX + 3 * blankx / 5,
 				insideLY, insideLX + 4 * blankx / 5, judgeHistory[3],
-				0xff0000ff, 0x55135901);
+				0xfffffffe, 0x55135901);
 		history4.setTextSize(14);
 
 		// 注册监听，对history1按钮按下响应
@@ -2117,7 +2239,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象history5**********************************************************
 		history5 = new Button(context);
 		addButton(history5, insideLY - halfband, insideLX + 4 * blankx / 5,
-				insideLY, insideRX, judgeHistory[4], 0xff0000ff, 0x55135901);
+				insideLY, insideRX, judgeHistory[4], 0xfffffffe, 0x55135901);
 		history5.setTextSize(14);
 
 		// 注册监听，对history1按钮按下响应
@@ -2160,7 +2282,14 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象knowledge1
 		// knowledge1 = new Button(context);
 		addButton(knowledge1, insideLY, insideLX - band, insideLY + blanky / 5,
-				insideLX - halfband, "知识缺陷", 0xff0000ff, 0x55135901);
+				insideLX - halfband, "知识缺陷", 0xfffffffe, 0x55135901);
+		
+
+		
+		knowledge1.setTextSize(24);
+		
+		
+		
 		// 注册监听，对knowledgel按钮按下响应
 		knowledge1.setOnClickListener(new OnClickListener() {
 
@@ -2215,8 +2344,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象base
 		// base = new Button(context);
 		addButton(base, insideLY + blanky / 5, insideLX - band, insideLY + 2
-				* blanky / 5, insideLX - halfband, "基础不实", 0xff0000ff,
+				* blanky / 5, insideLX - halfband, "基础不实", 0xfffffffe,
 				0x55135901);
+		base.setTextSize(24);
 
 		// 注册监听，对base按钮按下响应
 		base.setOnClickListener(new OnClickListener() {
@@ -2273,8 +2403,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// conceptation = new Button(context);
 		addButton(conceptation, insideLY + 2 * blanky / 5, insideLX - band,
 				insideLY + 3 * blanky / 5, insideLX - halfband, "概念混淆",
-				0xff0000ff, 0x55135901);
-
+				0xfffffffe, 0x55135901);
+		conceptation.setTextSize(24);
 		// 注册监听，对base按钮按下响应
 		conceptation.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2325,9 +2455,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象memory
 		// memory = new Button(context);
 		addButton(memory, insideLY + 3 * blanky / 5, insideLX - band, insideLY
-				+ 4 * blanky / 5, insideLX - halfband, "记忆不好", 0xff0000ff,
+				+ 4 * blanky / 5, insideLX - halfband, "记忆不好", 0xfffffffe,
 				0x55135901);
-
+		memory.setTextSize(24);
 		// 注册监听，对base按钮按下响应
 		memory.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2382,8 +2512,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象textbook
 		// textbook = new Button(context);
 		addButton(textbook, insideLY + 4 * blanky / 5, insideLX - band,
-				insideRY, insideLX - halfband, "纲本不熟", 0xff0000ff, 0x55135901);
-
+				insideRY, insideLX - halfband, "纲本不熟", 0xfffffffe, 0x55135901);
+		textbook.setTextSize(24);
 		// 注册监听，对base按钮按下响应
 		textbook.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2438,8 +2568,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象enlighten
 		enlighten = new Button(context);
 		addButton(enlighten, insideRY + halfband, insideLX, insideRY + band,
-				insideLX + blankx / 5, "引导启发", 0xff0000ff, 0x55135901);
-
+				insideLX + blankx / 5, "引导启发", 0xfffffffe, 0x55135901);
+		enlighten.setTextSize(24);
 		// 注册监听，对base按钮按下响应
 		enlighten.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2478,9 +2608,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象incentive
 		incentive = new Button(context);
 		addButton(incentive, insideRY + halfband, insideLX + blankx / 5,
-				insideRY + band, insideLX + 2 * blankx / 5, "激励奖赏", 0xff0000ff,
+				insideRY + band, insideLX + 2 * blankx / 5, "激励奖赏", 0xfffffffe,
 				0x55135901);
-
+		incentive.setTextSize(24);
 		incentive.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View V) {
@@ -2519,10 +2649,11 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象exception
 		exception = new Button(context);
 		addButton(exception, insideRY + halfband, insideLX + 2 * blankx / 5,
-				insideRY + band, insideLX + 3 * blankx / 5, "提示期待", 0xff0000ff,
+				insideRY + band, insideLX + 3 * blankx / 5, "提示期待", 0xfffffffe,
 				0x55135901);
 
 		// 注册监听，对base按钮按下响应
+		exception.setTextSize(24);
 		exception.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View V) {
@@ -2560,9 +2691,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象drawback
 		drawback = new Button(context);
 		addButton(drawback, insideRY + halfband, insideLX + 3 * blankx / 5,
-				insideRY + band, insideLX + 4 * blankx / 5, "缺陷挖掘", 0xff0000ff,
+				insideRY + band, insideLX + 4 * blankx / 5, "缺陷挖掘", 0xfffffffe,
 				0x55135901);
-
+		drawback.setTextSize(24);
 		// 注册监听，对base按钮按下响应
 		drawback.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2602,8 +2733,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象method
 		method = new Button(context);
 		addButton(method, insideRY + halfband, insideLX + 4 * blankx / 5,
-				insideRY + band, insideRX, "方法建议", 0xff0000ff, 0x55135901);
-
+				insideRY + band, insideRX, "方法建议", 0xfffffffe, 0x55135901);
+		method.setTextSize(24);
 		// 注册监听，对base按钮按下响应
 		method.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2645,9 +2776,10 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象write
 		// write = new Button(context);
 		addButton(write, insideLY + 4 * blanky / 5, insideRX + halfband,
-				insideRY, insideRX + band, "书写不好", 0xff0000ff, 0x55135901);
+				insideRY, insideRX + band, "书写不好", 0xfffffffe, 0x55135901);
 
 		// 注册监听，对base按钮按下响应
+		write.setTextSize(24);
 		write.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View V) {
@@ -2712,10 +2844,11 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象expression
 		// expression = new Button(context);
 		addButton(expression, insideLY + 3 * blanky / 5, insideRX + halfband,
-				insideLY + 4 * blanky / 5, insideRX + band, "表达有误", 0xff0000ff,
+				insideLY + 4 * blanky / 5, insideRX + band, "表达有误", 0xfffffffe,
 				0x55135901);
 
 		// 注册监听，对base按钮按下响应
+		expression.setTextSize(24);
 		expression.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View V) {
@@ -2778,10 +2911,11 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象trick
 		// trick = new Button(context);
 		addButton(trick, insideLY + 2 * blanky / 5, insideRX + halfband,
-				insideLY + 3 * blanky / 5, insideRX + band, "技能不熟", 0xff0000ff,
+				insideLY + 3 * blanky / 5, insideRX + band, "技能不熟", 0xfffffffe,
 				0x55135901);
 
 		// 注册监听，对base按钮按下响应
+		trick.setTextSize(24);
 		trick.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View V) {
@@ -2846,9 +2980,9 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// 新建button对象unstandard
 		// unstandard = new Button(context);
 		addButton(unstandard, insideLY + blanky / 5, insideRX + halfband,
-				insideLY + 2 * blanky / 5, insideRX + band, "答欠规范", 0xff0000ff,
+				insideLY + 2 * blanky / 5, insideRX + band, "答欠规范", 0xfffffffe,
 				0x55135901);
-
+		unstandard.setTextSize(24);
 		// 注册监听，对base按钮按下响应
 		unstandard.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2910,13 +3044,19 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			}
 		});
 		// ***************************************************************************
-
+		//添加回放按钮
+		
+		
+		
+		
+		
+		
 		// 新建button对象analyze
 		// analyze = new Button(context);
 		addButton(analyze, insideLY, insideRX + halfband,
-				insideLY + blanky / 5, insideRX + band, "审题有误", 0xff0000ff,
+				insideLY + blanky / 5, insideRX + band, "审题有误", 0xfffffffe,
 				0x55135901);
-
+		analyze.setTextSize(24);
 		// 注册监听，对base按钮按下响应
 		analyze.setOnClickListener(new OnClickListener() {
 			@Override
@@ -3025,6 +3165,14 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		finalTv.setTypeface(fontFace);
 		sideText.setTypeface(fontFace);
 		bottomText.setTypeface(fontFace);
+		pigaihuanPingyuText.setTypeface(fontFace);
+//		for(int i=0;i<totalQuestion;i++)
+//		commentsTv[i].setTypeface(fontFace);
+
+		
+		
+		
+		
 
 		for (int i = 0; i < subMenuBtnLK_array.length; i++) {
 			final int index = i;
@@ -3089,6 +3237,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -3173,6 +3322,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -3257,6 +3407,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -3341,6 +3492,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -3426,6 +3578,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -3507,6 +3660,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -3588,6 +3742,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -3673,6 +3828,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 												+ pingyuRow);
 										finalTv.setTextColor(Color.RED);
 										finalTv.setVisibility(View.VISIBLE);
+										comments = pingyuLine+","+pingyuRow;
 									}
 								}
 							});
@@ -3753,6 +3909,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -3832,6 +3989,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -3918,6 +4076,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -4002,6 +4161,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -4086,6 +4246,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -4170,6 +4331,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -4254,6 +4416,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 										+ pingyuRow);
 								finalTv.setTextColor(Color.RED);
 								finalTv.setVisibility(View.VISIBLE);
+								comments = pingyuLine+","+pingyuRow;
 							}
 						}
 					});
@@ -4284,9 +4447,22 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		nameText.setTextColor(Color.BLUE);
 		nameText.setBackgroundColor(Color.alpha(Color.GRAY));
 		nameText.bringToFront();
-		nameText.setVisibility(View.VISIBLE);
+		nameText.setVisibility(View.GONE);
 		personalInfoDisplayLayout.addView(nameText, nameLp);
 		this.addView(personalInfoDisplayLayout, nameLp);
+		
+		
+		//	批改环初始化显示内容
+		for(int i=0;i<5;i++) {
+			subMenuBtnLK_array[i].setVisibility(View.VISIBLE);
+			subMenuBtnLK_array[i].setBackgroundColor(0xff18499d);
+			subMenuBtnBD_array[i].setVisibility(View.VISIBLE);
+			subMenuBtnBD_array[i].setBackgroundColor(0xff18499d);
+			subMenuBtnRA_array[i].setVisibility(View.VISIBLE);
+			subMenuBtnRA_array[i].setBackgroundColor(0xff18499d);
+		}
+		
+		
 
 		nameText.invalidate();
 		view.postInvalidate();
@@ -4299,10 +4475,16 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				LayoutParams.WRAP_CONTENT);
 		pageLp.setMargins(1200, 2320, 0, 100);
 
-		pageText.setText("" + pageNum + " / " + pageTotal);
+		
+		//0421取消作业编号
+		
+//		pageText.setText("" + pageNum + " / " + pageTotal);
+
+		pageText.setVisibility(View.GONE);
 
 		// pBgImage.setBackGroundImage(pageNum);
 		pBgImage.invalidate();
+		//清空画布
 		pageNum++;
 		// indexTiMu=pageNum;
 
@@ -4311,7 +4493,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		pageText.setTextColor(Color.BLACK);
 		pageText.setBackgroundColor(Color.TRANSPARENT);
 		pageText.bringToFront();
-		pageText.setVisibility(View.VISIBLE);
+		pageText.setVisibility(View.GONE);
 		pageInfoDisplayLayout.addView(pageText, pageLp);
 		this.addView(pageInfoDisplayLayout, pageLp);
 
@@ -4535,6 +4717,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				// historyImageListAdapter.setSelectIndex(position);
 				// historyImageListAdapter.notifyDataSetChanged();
 				Log.i("hListView", "弹出大图");
+				
 
 			}
 		});
@@ -4610,6 +4793,21 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				Log.v("long", "click!!!!!!!!!");
 			}
 		});
+		recordTime=new TextView(context);
+		RelativeLayout.LayoutParams recordLp = new RelativeLayout.LayoutParams(
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		 recordLp.leftMargin=650;
+		 recordLp.rightMargin=700;
+		 recordLp.bottomMargin=800;
+		 recordLp.topMargin=1000;
+//		 recordLp.height=50;
+//		 recordLp.width=200;
+		 recordTime.setTextSize(150);
+		 recordTime.setText("5");
+		 recordTime.setTextColor(0xffff0000);
+		// 将实例化后的的dwview加入布局
+		this.addView(recordTime,recordLp);
+		 recordTime.setVisibility(View.GONE);
 	}
 
 	// *********************************************************************************************************************************************************
@@ -4625,7 +4823,82 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 	// }
 
 	// **********************************************************以上是初始化历史图片arralist*******************************************************
-	public static void setNameText(String chapter, String name) {
+	//wsk,2018.11.23 解析xml，获得学生信息
+		public static void setNameText(String chapter, String name) {
+			if (chapter.equals("0021")) {
+
+				keshiName = "第二十一章 一元一次方程";
+			} else if (chapter.equals("0022")) {
+				keshiName = "第二章 整式";
+			} else if (chapter.equals("0023")) {
+				keshiName = "第二十三章 旋转";
+			}
+			
+//	 		String[] str = {"myxml/0944-0001-0000-0023-0000-0009-0022.xml","myxml/0945-0001-0000-0023-0000-0009-0022.xml",
+//			                "myxml/0946-0001-0000-0023-0000-0009-0022.xml","myxml/0947-0001-0000-0023-0000-0009-0022.xml",
+//			               "myxml/0948-0001-0000-0023-0000-0009-0022.xml","myxml/0949-0001-0000-0023-0000-0009-0022.xml"};
+			String tempid[] = new String[6];//存放学生学号
+	        String tempname[] = new String[6];//存放学生姓名
+			String number = "";
+			int i = 0;
+			
+			
+			File file = new File("/sdcard/studentinfoxml");//路径：学生信息xml文件所在目录
+			File[] files=file.listFiles();        
+	     	if (files == null){Log.e("error","空目录");}        
+			List<String> s = new ArrayList<String>();        
+			for(int m =0;m<files.length;m++)
+			{            
+				s.add(files[m].getAbsolutePath());//s里存放了每一个xml文件的绝对路径        
+			}
+			
+			
+			for(int k = 0;k<s.size();k++)
+	        {
+				File filetemp = new File(s.get(k));
+				try 
+				{
+	        		doc = Jsoup.parse(filetemp, "UTF-8");
+	        	} 
+				catch (IOException e) 
+				{
+	        		// TODO Auto-generated catch block
+	        		e.printStackTrace();
+	       		}
+	        	Elements elementstudentid = doc.getElementsByTag("studentid");//根据标签读出学生学号
+	        	Elements elementstudentname = doc.getElementsByTag("studentname");//根据标签读出学生姓名
+	        	tempid[i] = elementstudentid.text().toString().substring(0,elementstudentid.text().toString().length());//存放学号
+	        	tempname[i] = elementstudentname.text().toString().substring(0,elementstudentname.text().toString().length());//存放姓名
+	        	i++;
+	        }
+		
+			for(int j = 0;j<s.size();j++)
+			{
+				if(name.equals(tempid[j]))//将传入的id与读出的id比较，找出学生信息
+				{
+					number = name.substring(0,name.length());
+					name = tempname[j].substring(0,tempname[j].length());
+					//nameText.setText("学科：数学  " + " 章节：" + keshiName + "\n" + "学号：" + number + " "+ "姓名：" + name);
+					break;
+				}
+			}
+/*			if(name.equals("陈程"))number = "0944";
+			else if(name.equals("王洪亮"))number = "0945";
+			else if(name.equals("李亚芳"))number = "0946";
+			else if(name.equals("苏星辰"))number = "0947";*/
+			nameText.setText("学科：数学  " + " 章节：" + keshiName + "\n" + "学号：" + number + " "+ "姓名：" + name);
+			//nameText.setText("学科：数学  " + " 章节：" + keshiName + "\n" + "姓名：" + name);
+		}
+		public static void setNameTextbyPageID(String sid,String name ) {
+//			String number = "";
+//			if(name.equals("陈程"))number = "0944";
+//			else if(name.equals("王洪亮"))number = "0945";
+//			else if(name.equals("李亚芳"))number = "0946";
+//			else if(name.equals("苏星辰"))number = "0947";
+			nameText.setText("学科：数学  " + " 章节：" + keshiName + "\n" + "学号：" + "0"+sid + " "+ "姓名：" + name+"答题时间：3分钟");
+		}
+/*	
+public static void setNameText(String chapter, String name) {
 		if (chapter.equals("0021")) {
 
 			keshiName = "第二十一章 一元一次方程";
@@ -4652,7 +4925,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		} 
 		nameText.setText("学科：数学  " + " 章节：" + keshiName + "\n" + "学号：" + name);
 	}
-
+*/
 	// ********************************************************************************************************************************************************************
 	public static void setPageXML(String str) {
 		pagecXML = str;
@@ -4825,7 +5098,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// path = WolfTemplateUtil.TEMPLATE_PATH +
 		// mTemplate.getName()+"/"+mTemplate.getBackground();
 		bgPath = WolfTemplateUtil.getTemplateBgPath();
-
+       Log.e("zgm","bgPath"+bgPath);
 		// ly
 		// test
 		// 注释掉，涂鸦态不加模板
@@ -4881,6 +5154,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 		view = new MyView(context, mBitmap, mScreenLayerBitmap, mTemplate);
 		this.addView(view);
+	
 
 		undoList = new LinkedList<Command>();
 
@@ -5242,7 +5516,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// }
 
 		ScaleSave.getInstance().newPage();
-		view.freeBitmap.resetFreeBitmapList();
+//		view.freeBitmap.resetFreeBitmapList();//这里应该刷新？
 
 		mScaleTransparentBitmap.eraseColor(Color.TRANSPARENT);// 清理涂鸦态底图
 		for (int i = 0; i < view.cursorBitmap.listEditableCalligraphy.size(); i++) {
@@ -5323,7 +5597,8 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		// ly
 		// 新建涂鸦态之后要加入一个背景图
 		view.isLoad = false;
-		view.addFreeBg();
+//		Log.e("zgm","123————addNewPage");
+		view.addFreeBg(0);//如果是第一次加载，第一页对应数组中的0项，没问题，如果是翻页动作，输入任何在范围内的参数都不影响应该显示的页
 		// end
 
 		// ly
@@ -5449,19 +5724,70 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 				if (v == mHandwriteInsertSpaceBtn) {
 					Log.e("addmorepic", "add next pic.");
 					// view.saveDatebase();
-					view.addNextPic();
+//					view.addNextPic(); 0426
+					//在这里清除/xyz和/-1
+					deleteDir("/sdcard/xyz/");
+					deleteDir("/sdcard/-1/");
+					
 				}
 				if (v == mHandwriteEndofLineBtn) {
 					Log.e("addmorepic", "add previous pic.");
 					view.addPreviousPic();
 					Toast.makeText(mContext, "上一张", Toast.LENGTH_SHORT).show();
 				}
+				if (v == mHandwriteInsertEnSpaceBtn) {
+					sceneSituation = 1;
+					doDownLoadTask(mContext);
+//					ansHintIV.setVisibility(View.VISIBLE);
+					nameText.setText("               获取待批改作业中");
+					nameText.setVisibility(View.VISIBLE);
+					
+					invalidate();
+					System.gc();
+					
+				}
 
 				if (v == mHandwriteDelBtn) {
-					Log.i("sqldb", "clc database");
-					DatabaseOp.clcDatabase(Start.db);
-					Toast.makeText(mContext, "clear databese",
-							Toast.LENGTH_SHORT).show();
+					ansHintIV.setVisibility(View.GONE);
+					Calligraph.pageTotal  = Calligraph.getFileNumber("/sdcard/xyz/");
+//					pageTotal = 0;
+					Calligraph.pageText.setText("共"+Calligraph.pageTotal+"份");
+					Calligraph.pageText.setVisibility(View.VISIBLE);
+//					transParentStatisticLayout.removeAllViews();
+//					transParentStatisticLayout.addView(statisticTextView[3]);
+//					statisticTextView[3].setVisibility(View.VISIBLE);
+					
+//					Log.i("sqldb", "clc database");
+//					DatabaseOp.clcDatabase(Start.db);
+//					Toast.makeText(mContext, "订正完成一人",
+//							Toast.LENGTH_SHORT).show();
+//					unrevisedCount--;
+//					if(unrevisedCount<=0)unrevisedCount=0;
+//					Spanned text1;
+//					text1 = Html
+//							.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+//									+ question[currentItem - 1].right
+//									+ ""
+//									+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+//									+ question[currentItem - 1].wrong
+//									+ ""
+//									+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+//									+ unrevisedCount +"/"+question[currentItem - 1].weird
+//									+ ""
+//									+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+//									+ question[currentItem - 1].weird1
+//									+ ""
+//									+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=white><b>"
+//									+ question[currentItem - 1].weird2
+//									+ "</b></font>");
+//					statisticTextView[7].setText(text1);
+					
+					
+					
+					
+					
+					
+					
 
 					// Log.i("addIndex", "show pic index.");
 					// // view.addPreviousPic();
@@ -5571,6 +5897,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 					// end
 
 					view.changeStateAndSync(MyView.STATUS_DRAW_CURSOR);
+//					20190414让透明统计条一直出现
 					transParentStatisticLayout.setVisibility(View.GONE);
 					gestures.removeOnGestureListener(null);
 					// gestures.setVisibility(view.INVISIBLE);
@@ -5692,7 +6019,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 
 		Toast toast = new Toast((Start.instance).getApplicationContext());
 		toast.setGravity(Gravity.TOP | Gravity.LEFT, 50, (int) (yy + 200));
-		toast.setDuration(Toast.LENGTH_LONG);
+		toast.setDuration(Toast.LENGTH_SHORT);
 		toast.setView(layout);
 		// try
 		// {
@@ -5848,7 +6175,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 			Start.instance.startActivityForResult(intent,
-					Start.AddCameraRequest);
+					Start.AddCameraRequest);//Start.AddCameraRequest=2
 
 			// shareType = PHOTOSHARE;
 			//
@@ -5993,7 +6320,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 				// 啟動該activity，并在該activity結束返回數據,所以調用startActivityForResult()方法
 				Start.instance.startActivityForResult(choosePictureIntent,
-						CHOOSEPICTURE_REQUESTCODE);
+						CHOOSEPICTURE_REQUESTCODE);//CHOOSEPICTURE_REQUESTCODE = 0
 				// Toast.makeText(Start.context, "打开相册插入图片",
 				// Toast.LENGTH_SHORT).show();
 				return;
@@ -6015,7 +6342,7 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 			intent.setType("image/*");
 			Start.instance.startActivityForResult(intent,
-					Start.AddPictureRequest);
+					Start.AddPictureRequest);//AddPictureRequest = 1
 
 		} else if (v == expend_AddVideoBtn) {
 			my_toast("视频功能正在建设中");
@@ -6687,81 +7014,22 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		Start.context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri
 				.parse("file://" + Environment.getExternalStorageDirectory())));
 	}
-
-	// 截屏代码 caoheng 2015.12.15
+//截取整个calligraph的内容
 	public boolean saveScreen() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss",
 				Locale.US);
-		String fname = "/sdcard/" + view.pageXML + ".jpg";
-		view.invalidate();
-		view.setDrawingCacheEnabled(true);
-		view.buildDrawingCache();
-
-		pingyuDisplayLayout.invalidate();
-		pingyuDisplayLayout.setDrawingCacheEnabled(true);
-		pingyuDisplayLayout.buildDrawingCache();
-
-		pingyuDisplayLayout1.invalidate();
-		pingyuDisplayLayout1.setDrawingCacheEnabled(true);
-		pingyuDisplayLayout1.buildDrawingCache();
-
-		tounaoDisplayLayout.invalidate();
-		tounaoDisplayLayout.setDrawingCacheEnabled(true);
-		tounaoDisplayLayout.buildDrawingCache();
-
-		pigaihuanPingyuText.invalidate();
-		pigaihuanPingyuText.setDrawingCacheEnabled(true);
-		pigaihuanPingyuText.buildDrawingCache();
-
+//		String fname = "/sdcard/pigairesult/" + view.pageXML + ".jpg";
+		//测试存储
+		String fname = "/sdcard/pigairesult/" + "001-0944-0-0-0" + ".jpg";
 		
-
-		pigaiResultImageView.invalidate();
-		pigaiResultImageView.setDrawingCacheEnabled(true);
-		pigaiResultImageView.buildDrawingCache();
-
-		Bitmap bitmap = view.getDrawingCache();
-		Bitmap bitmap1 = pingyuDisplayLayout.getDrawingCache();
-		Bitmap bitmap2 = pingyuDisplayLayout1.getDrawingCache();
-		Bitmap bitmap3 = tounaoDisplayLayout.getDrawingCache();
-		Bitmap bitmap4 = pigaihuanPingyuText.getDrawingCache();
-		Bitmap bitmap5 = pigaiResultImageView.getDrawingCache();
-
-		Canvas canvas = new Canvas(bitmap);
-		Matrix drawMatrix = new Matrix();
-		// drawMatrix = pingyuDisplayLayout.getMatrix();
-		drawMatrix.set(pingyuDisplayLayout.getMatrix());
-		drawMatrix.setTranslate(200, 1050);
-
-		Matrix drawMatrix1 = new Matrix();
-		// drawMatrix = pingyuDisplayLayout.getMatrix();
-		drawMatrix1.set(pingyuDisplayLayout1.getMatrix());
-		drawMatrix1.setTranslate(200, 1400);
-
-		Matrix drawMatrix2 = new Matrix();
-		drawMatrix2.set(pingyuDisplayLayout1.getMatrix());
-		drawMatrix2.setTranslate(200, 200);
-
-		Matrix drawMatrix3 = new Matrix();
-		drawMatrix3.set(pingyuDisplayLayout1.getMatrix());
-		drawMatrix3.setTranslate(800, 2200);
-
-		Matrix drawMatrix4 = new Matrix();
-		drawMatrix4.set(pigaiResultImageView.getMatrix());
-		drawMatrix4.setTranslate(100, 2000);
-
-		if (bitmap1 != null)
-			canvas.drawBitmap(bitmap1, drawMatrix, null);
-		if (bitmap2 != null)
-			canvas.drawBitmap(bitmap2, drawMatrix1, null);
-		if (bitmap3 != null)
-			canvas.drawBitmap(bitmap3, drawMatrix2, null);
-		// if(bitmap1!=null)canvas.drawBitmap(bitmap1, pingyuText, null);
-		// if(bitmap2!=null)canvas.drawBitmap(bitmap2, new Matrix(), null);
-
-		if (bitmap4 != null)
-			canvas.drawBitmap(bitmap4, drawMatrix3, null);
-		if (bitmap5 != null)
-			canvas.drawBitmap(bitmap5, drawMatrix4, null);
+		View dView = Start.c;
+		dView.getRootView();
+		dView.setDrawingCacheEnabled(true);
+		dView.buildDrawingCache();
+		
+		Bitmap bitmap = Bitmap.createBitmap(dView.getDrawingCache());
+		
+		
 
 		if (bitmap != null) {
 			System.out.println("bitmap got!");
@@ -6778,20 +7046,120 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 		Uri data = Uri.parse("file://storage/emulated/0/");
 		Start.context.sendBroadcast(new Intent(
 				Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
-		// Intent intent = new Intent();
-		// intent.setAction(Intent.ACTION_MEDIA_MOUNTED);
-		// Uri data = Uri.parse("/storage/emulated/0");
-		// intent.setData(data);
-		// Start.context.sendBroadcast(intent);
-
-		//2017.6.19 cahe upload homework pic
-
+		
 		
 		
 		
 		
 		return true;
 	}
+	
+	
+	
+	// 截屏代码 caoheng 2015.12.15
+//	public boolean saveScreen() {
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss",
+//				Locale.US);
+//		String fname = "/sdcard/" + view.pageXML + ".jpg";
+//		view.invalidate();
+//		view.setDrawingCacheEnabled(true);
+//		view.buildDrawingCache();
+//
+//		pingyuDisplayLayout.invalidate();
+//		pingyuDisplayLayout.setDrawingCacheEnabled(true);
+//		pingyuDisplayLayout.buildDrawingCache();
+//
+//		pingyuDisplayLayout1.invalidate();
+//		pingyuDisplayLayout1.setDrawingCacheEnabled(true);
+//		pingyuDisplayLayout1.buildDrawingCache();
+//
+//		tounaoDisplayLayout.invalidate();
+//		tounaoDisplayLayout.setDrawingCacheEnabled(true);
+//		tounaoDisplayLayout.buildDrawingCache();
+//
+//		pigaihuanPingyuText.invalidate();
+//		pigaihuanPingyuText.setDrawingCacheEnabled(true);
+//		pigaihuanPingyuText.buildDrawingCache();
+//
+//		
+//
+//		pigaiResultImageView.invalidate();
+//		pigaiResultImageView.setDrawingCacheEnabled(true);
+//		pigaiResultImageView.buildDrawingCache();
+//
+//		Bitmap bitmap = view.getDrawingCache();
+//		Bitmap bitmap1 = pingyuDisplayLayout.getDrawingCache();
+//		Bitmap bitmap2 = pingyuDisplayLayout1.getDrawingCache();
+//		Bitmap bitmap3 = tounaoDisplayLayout.getDrawingCache();
+//		Bitmap bitmap4 = pigaihuanPingyuText.getDrawingCache();
+//		Bitmap bitmap5 = pigaiResultImageView.getDrawingCache();
+//
+//		Canvas canvas = new Canvas(bitmap);
+//		Matrix drawMatrix = new Matrix();
+//		// drawMatrix = pingyuDisplayLayout.getMatrix();
+//		drawMatrix.set(pingyuDisplayLayout.getMatrix());
+//		drawMatrix.setTranslate(200, 1050);
+//
+//		Matrix drawMatrix1 = new Matrix();
+//		// drawMatrix = pingyuDisplayLayout.getMatrix();
+//		drawMatrix1.set(pingyuDisplayLayout1.getMatrix());
+//		drawMatrix1.setTranslate(200, 1400);
+//
+//		Matrix drawMatrix2 = new Matrix();
+//		drawMatrix2.set(pingyuDisplayLayout1.getMatrix());
+//		drawMatrix2.setTranslate(200, 200);
+//
+//		Matrix drawMatrix3 = new Matrix();
+//		drawMatrix3.set(pingyuDisplayLayout1.getMatrix());
+//		drawMatrix3.setTranslate(800, 2200);
+//
+//		Matrix drawMatrix4 = new Matrix();
+//		drawMatrix4.set(pigaiResultImageView.getMatrix());
+//		drawMatrix4.setTranslate(100, 2000);
+//
+//		if (bitmap1 != null)
+//			canvas.drawBitmap(bitmap1, drawMatrix, null);
+//		if (bitmap2 != null)
+//			canvas.drawBitmap(bitmap2, drawMatrix1, null);
+//		if (bitmap3 != null)
+//			canvas.drawBitmap(bitmap3, drawMatrix2, null);
+//		// if(bitmap1!=null)canvas.drawBitmap(bitmap1, pingyuText, null);
+//		// if(bitmap2!=null)canvas.drawBitmap(bitmap2, new Matrix(), null);
+//
+//		if (bitmap4 != null)
+//			canvas.drawBitmap(bitmap4, drawMatrix3, null);
+//		if (bitmap5 != null)
+//			canvas.drawBitmap(bitmap5, drawMatrix4, null);
+//
+//		if (bitmap != null) {
+//			System.out.println("bitmap got!");
+//			try {
+//				FileOutputStream out = new FileOutputStream(fname);
+//				bitmap.compress(Bitmap.CompressFormat.JPEG, 30, out);
+//				System.out.println("file " + fname + "outputdonezhuan .");
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		} else {
+//			System.out.println("bitmap is NULL!");
+//		}
+//		Uri data = Uri.parse("file://storage/emulated/0/");
+//		Start.context.sendBroadcast(new Intent(
+//				Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, data));
+//		// Intent intent = new Intent();
+//		// intent.setAction(Intent.ACTION_MEDIA_MOUNTED);
+//		// Uri data = Uri.parse("/storage/emulated/0");
+//		// intent.setData(data);
+//		// Start.context.sendBroadcast(intent);
+//
+//		//2017.6.19 cahe upload homework pic
+//
+//		
+//		
+//		
+//		
+//		return true;
+//	}
 
 	// try {
 	// if (!file.exists()) {//文件不存在则创建
@@ -6835,4 +7203,615 @@ public class Calligraph extends RelativeLayout implements OnPanelListener,
 			}
 		}
 	}
+
+
+public class MyClickListener implements GestureView.OnGestureListener{
+	// 2016.4.12解决不同笔画数手势问题
+	int lastStrokeCount;
+	public GestureOverlayView overlay;
+	public MotionEvent event;
+	Handler handler = new Handler();
+
+	Runnable runnable = new Runnable() {
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			if (event.getAction() == MotionEvent.ACTION_UP
+					&& (overlay.getGesture().getLength() > 10)) {
+				handler.postDelayed(this, 1000);
+				lastStrokeCount = overlay.getGesture()
+						.getStrokesCount();
+
+				// Log.i("strokeevent",
+				// String.valueOf(lastStrokeCount));
+				switch (lastStrokeCount) {
+				case 1:
+
+					ArrayList<Prediction> predictionswr = gestureLib
+							.recognize(overlay.getGesture());
+					if (predictionswr.size() > 0) {
+						Prediction prediction = (Prediction) predictionswr
+								.get(0);//hu
+						if (prediction.score > 2) {
+							judge = prediction.name;
+							if (judge.equals("Almost"))
+								judge = "Right";
+							Toast.makeText(mContext, judge,
+									Toast.LENGTH_SHORT).show();
+						}
+
+						else {
+							judge = "ignore";
+							Toast.makeText(mContext, "写字",
+									Toast.LENGTH_SHORT).show();
+						}
+
+					}
+					break;
+				case 2:
+
+					ArrayList<Prediction> predictions = gestureLib
+							.recognize(overlay.getGesture());
+					if (predictions.size() > 0) {
+						Prediction prediction1 = (Prediction) predictions
+								.get(0);
+						if (prediction1.score > 4) {
+							judge = prediction1.name;
+							if (judge.equals("Right"))
+								judge = "Almost";
+							Toast.makeText(mContext, judge,
+									Toast.LENGTH_SHORT).show();
+						}
+
+						else
+							judge = "ignore";
+						Toast.makeText(mContext, "写字",
+								Toast.LENGTH_SHORT).show();
+					}
+					// Toast.makeText(mContext, "错", Toast.LENGTH_SHORT)
+					// .show();
+					break;
+				case 3:
+					judge = "错3";
+					Toast.makeText(mContext, "半对2", Toast.LENGTH_SHORT)
+							.show();
+					break;
+				case 4:
+					judge = "错4";
+					Toast.makeText(mContext, "半对3", Toast.LENGTH_SHORT)
+							.show();
+					break;
+				default:
+					lastStrokeCount = 0;
+				}
+//switch到这结束						
+				int situation = 5;
+
+				if (judge.equals("Right"))
+					situation = 0;
+				else if (judge.equals("wrong"))
+					situation = 1;
+				else if (judge.equals("Almost"))
+					situation = 2;
+				else if (judge.equals("错3"))
+					situation = 3;
+				else if (judge.equals("错4"))
+					situation = 4;
+
+				for (currentItem = 1; currentItem < totalQuestion; currentItem++) {
+					if (currentItem == 4) {
+						System.arraycopy(commentStringReplacement1, 0,
+								commentString, 0, 6);
+						Log.i("whichcomment", ""
+								+ SideDownMode.whichComment);
+
+					}
+
+					else
+						System.arraycopy(commentStringReplacement2, 0,
+								commentString, 0, 6);
+
+					Spanned text;
+					// 格式 =
+					// Html.fromHtml("<font color=red><b>"+currentItem+"</b></font>");
+
+					if ((yy > pos[currentItem - 1])
+							&& (yy < pos[currentItem])) {
+						Log.i("prediction", "0122:i" + currentItem + "+"
+								+ pos[currentItem]);
+						Log.i("prediction", "0122:y="+yy);
+						switch (situation) {
+						case 0:
+							question[currentItem - 1].right++;
+							elementResult.get(currentItem-1).text("对");
+							text = Html
+									.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=yellow><b>"
+											+ question[currentItem - 1].right
+											+ "</b></font>"
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].wrong
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird1
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird2
+											+ "");
+							statisticTextView[currentItem - 1]
+									.setText(text);
+							break;
+						case 1:
+							question[currentItem - 1].wrong++;
+							elementResult.get(currentItem - 1)
+									.text("错");
+							text = Html
+									.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].right
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=white><b>"
+											+ question[currentItem - 1].wrong
+											+ "</b></font>"
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird1
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird2
+											+ "");
+							statisticTextView[currentItem - 1]
+									.setText(text);
+							break;
+						case 2:
+							question[currentItem - 1].weird++;
+							unrevisedCount++;
+							elementResult.get(currentItem - 1).text(
+									"有问题");
+							text = Html
+									.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].right
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].wrong
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=yellow><b>"
+											+ question[currentItem - 1].weird
+											+"</b></font>"
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird1
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird2
+											+ "");
+							statisticTextView[currentItem - 1]
+									.setText(text);
+							break;
+						case 3:
+							question[currentItem - 1].weird1++;
+							elementResult.get(currentItem - 1).text(
+									"有问题1");
+							text = Html
+									.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].right
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].wrong
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=white><b>"
+											+ question[currentItem - 1].weird1
+											+ "</b></font>"
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird2
+											+ "");
+							statisticTextView[currentItem - 1]
+									.setText(text);
+							break;
+						case 4:
+							question[currentItem - 1].weird2++;
+							elementResult.get(currentItem - 1).text(
+									"有问题2");
+							text = Html
+									.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].right
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].wrong
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+											+ question[currentItem - 1].weird1
+											+ ""
+											+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=white><b>"
+											+ question[currentItem - 1].weird2
+											+ "</b></font>");
+							statisticTextView[currentItem - 1]
+									.setText(text);
+							break;
+						default:
+							// question[i].weird++;
+							break;
+
+						}
+
+						Log.i("prediction", "" + situation + " "
+								+ question[7].right + "  "
+								+ question[7].wrong);
+						Log.i("prediction", "i" + currentItem + "+"
+								+ pos[currentItem]);
+
+						statisticTextView[currentItem - 1]
+								.setVisibility(View.VISIBLE);
+
+						statisticTextView[currentItem - 1]
+
+						.setBackgroundColor(Color.argb(75, 99, 99, 99));
+
+						statisticTextView[currentItem - 1]
+								.setTextSize(21);
+						statisticTextView[currentItem - 1]
+								.setTextColor(Color.WHITE);
+						// statisticTextView[currentItem -
+						// 1].setBackgroundResource(R.drawable.corner_textview);
+						statisticTextView[currentItem - 1]
+								.setBackgroundResource(R.drawable.st_);
+
+						Log.i("sqldb", "update");
+//						DatabaseOp.update(Start.db, Start.gCurPageID,currentItem - 1,
+//								question[currentItem - 1].right,
+//								question[currentItem - 1].wrong,
+//								question[currentItem - 1].weird,
+//								question[currentItem - 1].weird1,
+//								question[currentItem - 1].weird2);
+
+						break;
+					} else {
+						// my_toast("不在判定区域");
+						continue;
+
+					}
+
+					// my_toast("对"+String.valueOf(question[i].right));
+				}
+
+				handler.removeCallbacks(runnable);
+			}
+
+		}
+
+	};
+	
+	@Override
+	public void onGesture(GestureOverlayView overlay, MotionEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onGestureCancelled(GestureOverlayView overlay, MotionEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onGestureEnded(GestureOverlayView overlay, MotionEvent event) {
+		// TODO Auto-generated method stub
+		yy = gestures.y;
+		
+		this.overlay = overlay;
+		this.event = event;
+		Log.i("prediction", "y=" + yy);
+		handler.postDelayed(runnable, 1500);
+	}
+
+	
+	
+	@Override
+	public void onGestureStarted(GestureOverlayView overlay, MotionEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
+public void setTrans(int situation, float y){
+	// 2016.4.12解决不同笔画数手势问题
+	
+	Spanned text;
+	float yy;
+	yy = (float) (y);
+		Log.i("prediction","totalQuestion = "+totalQuestion);
+		Log.i("prediction","pos0="+pos[0]);
+		Log.i("prediction","pos1="+pos[1]);
+		Log.i("prediction","pos2="+pos[2]);
+	Log.i("prediction", "0122:yy="+yy);
+	if (situation==13) {//在批改环出现的情况下双击
+		pigaihuanLayout.setVisibility(View.GONE);
+		pigaiResultImageView.setVisibility(View.GONE);
+//		pigaihuanPingyuText.setVisibility(View.VISIBLE);//0426
+		return;
+	}
+	else if (situation ==12) {//双击，弹出批改环，注意要修改双击位置的逻辑
+		pigaihuanLayout.setVisibility(View.VISIBLE);
+		int minutetemp=(int) (+Start.timePerItem /1000/60);	
+		int secondtemp=(int) (+Start.timePerItem/1000)%60;
+		totalTimeTv.setText("此题耗时"+minutetemp+"'"+secondtemp+"\""+"当前排名2名");
+//		totalTimeTv.setText("此题共用时"+Start.timePerItem+"分钟");
+		return;
+	}
+	if(sceneSituation == 0)return;
+	for (currentItem = 1; currentItem < totalQuestion; currentItem++) {
+         Log.i("crash","current="+currentItem+"||pos-1="+(pos[currentItem-1]/11.0));
+         Log.i("crash","current="+currentItem+"||pos="+(pos[currentItem]/11.0));
+		if ((yy > pos[currentItem - 1]/11.0)&& (yy < pos[currentItem]/11.0)) {
+			
+//			statisticTextView[2].setText("pppppppppppppppp");
+//			statisticTextView[currentItem-1].setText("iiiiiiiiiiiiiiiiiii");
+			Log.i("prediction", "0122:" + currentItem + "+"
+					+ pos[currentItem]);
+			Log.i("prediction", "0122:y="+yy);
+			Log.i("crash","c||"+situation+"c||"+pos[currentItem-1]+"c||"+yy+"c||"+currentItem);
+			switch (situation) {
+			case 0:
+				question[currentItem - 1].right++;
+				elementResult.get(currentItem-1).text("对");
+				text = Html
+						.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=yellow><b>"
+								+ question[currentItem - 1].right
+								+ "</b></font>"
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird1
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird2
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].wrong
+								+ "");
+				statisticTextView[currentItem - 1]
+						.setText(text);
+				
+				
+				
+				
+				setTransparentStatisticView(statisticTextView[currentItem - 1]);
+				
+
+				break;
+			case 2:
+				question[currentItem - 1].weird++;
+				elementResult.get(currentItem - 1)
+						.text("有问题");
+				text = Html
+						.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].right
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=yellow><b>"
+								+ question[currentItem - 1].weird
+								+ "</b></font>"
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird1
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird2
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].wrong
+								+ "");
+				statisticTextView[currentItem - 1]
+						.setText(text);
+				setTransparentStatisticView(statisticTextView[currentItem - 1]);
+				break;
+			case 3:
+				question[currentItem - 1].weird1++;
+				unrevisedCount++;
+				elementResult.get(currentItem - 1).text(
+						"有问题1");
+				text = Html
+						.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].right
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=yellow><b>"
+								+ question[currentItem - 1].weird1
+								+"</b></font>"
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird2
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].wrong
+								+ "");
+				statisticTextView[currentItem - 1]
+						.setText(text);
+				break;
+			case 4:
+				question[currentItem - 1].weird2++;
+				elementResult.get(currentItem - 1).text(
+						"有问题2");
+				text = Html
+						.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].right
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird1
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=yellow><b>"
+								+ question[currentItem - 1].weird2
+								+ "</b></font>"
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].wrong
+								+ "");
+				statisticTextView[currentItem - 1]
+						.setText(text);
+				setTransparentStatisticView(statisticTextView[currentItem - 1]);
+				break;
+			case 1:
+				question[currentItem - 1].wrong++;
+				elementResult.get(currentItem - 1).text(
+						"错");
+				text = Html
+						.fromHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].right
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird1
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+								+ question[currentItem - 1].weird2
+								+ ""
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=yellow><b>"
+								+ question[currentItem - 1].wrong
+								+ "</b></font>");
+				statisticTextView[currentItem - 1]
+						.setText(text);
+				setTransparentStatisticView(statisticTextView[currentItem - 1]);
+				break;
+			case 12://在客观题区域双击，弹出批改环
+pigaihuanLayout.setVisibility(View.VISIBLE);
+pigaiResultImageView.setVisibility(View.GONE);
+pigaihuanPingyuText.setVisibility(View.GONE);
+				break;
+
+			default:
+				// question[i].weird++;
+				break;
+
+			}
+
+			
+
+			Log.i("sqldb", "update");//0415
+//			DatabaseOp.update(Start.db, Start.gCurPageID, currentItem - 1,
+//					question[currentItem - 1].right,
+//					question[currentItem - 1].wrong,
+//					question[currentItem - 1].weird,
+//					question[currentItem - 1].weird1,
+//					question[currentItem - 1].weird2);
+
+			break;
+		} else {
+			// my_toast("不在判定区域");
+			continue;
+
+		}
+	}
+}
+public void setTransparentStatisticView(TextView v) {
+	//setTransparentStatisticView(statisticTextView[currentItem - 1]);
+	v.setVisibility(View.VISIBLE);
+	v.setBackgroundColor(Color.argb(75, 99, 99, 99));
+	v.setTextSize(21);
+	v.setTextColor(Color.BLACK);
+	v.setBackgroundResource(R.drawable.st);
+}
+
+public void doDownLoadTask(final Context context ) {
+	new AlertDialog.Builder(context).setTitle("确认").setMessage("是否下载？")
+	.setPositiveButton("是", new DialogInterface.OnClickListener() {
+
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			// TODO Auto-generated method stub
+			Log.d(TAG, "onClick 1 = " + which);
+			doDownLoadWork(context);
+			
+		}
+	}).setNegativeButton("否", new DialogInterface.OnClickListener() {
+
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			// TODO Auto-generated method stub
+			Log.d(TAG, "onClick 2 = " + which);
+		}
+	}).show();
+	
+}
+public void doDownLoadWork(Context context) {
+	DownLoaderTask task = new DownLoaderTask(
+			"http://118.24.109.3/Public/smartpen/download.php",
+			"/sdcard/xyz/", context);
+
+	// DownLoaderTask task = new
+	// DownLoaderTask("http://192.168.9.155/johnny/test.h264",
+	// getCacheDir().getAbsolutePath()+"/", this);
+	task.execute();
+}
+//统计文件夹下文件数目
+public static int getFileNumber(String filePath) {
+	int number = 0;
+	String filename;
+	File file = new File(filePath);
+	if(file.exists()) {
+	File[] listFile = file.listFiles();
+
+	for(int i = 0;i<listFile.length;i++) {
+		String filepathname = listFile[i].getPath();
+		String ori = filepathname.substring(filepathname.lastIndexOf("/"));
+		filename  = ori.substring(ori.lastIndexOf(".")+1,ori.length());
+
+		if(filename.equals("page"))
+		number++;
+		
+	}
+	}
+	
+	else number = 1;
+	
+	return number;
+	
+}
+
+//清空目录
+public static boolean deleteDir(String path){
+	File file = new File(path);
+	if(!file.exists()){//判断是否待删除目录是否存在
+		System.err.println("The dir are not exists!");
+		return false;
+	}
+	
+	String[] content = file.list();//取得当前目录下所有文件和文件夹
+	for(String name : content){
+		File temp = new File(path, name);
+		if(temp.isDirectory()){//判断是否是目录
+			deleteDir(temp.getAbsolutePath());//递归调用，删除目录里的内容
+			temp.delete();//删除空目录
+		}else{
+			if(!temp.delete()){//直接删除文件
+				System.err.println("Failed to delete " + name);
+			}
+		}
+	}
+	return true;
+}
+
+
+
+public void setActivity(Start activity) {
+	this.activity = activity;
+}
+
+
+
+
+}
+
+
+
+

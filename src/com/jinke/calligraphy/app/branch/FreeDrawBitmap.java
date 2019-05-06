@@ -121,7 +121,7 @@ public class FreeDrawBitmap extends BaseBitmap{
 	//用于把背景图加入到List中
 	public void addBgPic(Bitmap bitmap)
 	{
-		if(freeBitmapInfoList.size()!=0)
+		if(freeBitmapInfoList.size()!=0)//freeBitmapInfoList中只能有一张图片
 			return;
 		float ratio = bitmap.getWidth() / (float)1600;
 		RectF rect = new RectF(0, 0, 1600, (int)(bitmap.getHeight()/ratio));
@@ -250,17 +250,16 @@ public class FreeDrawBitmap extends BaseBitmap{
 	public void resetFreeBitmapList(){
 		
 		for(int i=0;i<freeBitmapInfoList.size();i++){
-			if(!freeBitmapInfoList.get(i).bitmap.isRecycled()){
-				freeBitmapInfoList.get(i).bitmap.recycle();
+			if(!freeBitmapInfoList.get(i).bitmap.isRecycled()){//没有被回收
+				freeBitmapInfoList.get(i).bitmap.recycle();//没有回收就回收
 				BitmapCount.getInstance().recycleBitmap("FreeDrawBitmap resetFreeBitmapList bgBitmap");
 			}
 		}
-		freeBitmapInfoList.clear();
+		freeBitmapInfoList.clear(); //清空freeBitmapInfoList
 		System.gc();
 		
 		initFreeBitmapInfoList();
-		
-		
+				
 		
 	}
 	
@@ -353,7 +352,7 @@ public class FreeDrawBitmap extends BaseBitmap{
 			
 			Log.e("!!!!!!!!!!!!","xxx:"+x+"yyyy:"+y+"flip_dst"+EditableCalligraphy.flip_dst);
 			
-			canvas.drawBitmap(infoBitmap, x, y, new Paint());
+			canvas.drawBitmap(infoBitmap, x, y, new Paint());//这句是画翻页后的背景图片
 		}
 	}
 }

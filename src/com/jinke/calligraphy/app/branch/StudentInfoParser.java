@@ -13,7 +13,9 @@ import org.jsoup.select.Elements;
 
 public class StudentInfoParser {
 
-
+/*
+ * 该类没用到
+ *
 	private static Document document;
 
 	static{
@@ -38,6 +40,7 @@ public class StudentInfoParser {
 		}
     	return list;
     }
+*/
 }
 
 

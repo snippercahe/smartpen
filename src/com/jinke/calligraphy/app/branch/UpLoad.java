@@ -28,27 +28,28 @@ public class UpLoad {
 	  // 服务器上接收文件的处理页面，这里根据需要换成自己的
 	
 	  /* 上传文件至Server，uploadUrl：接收文件的处理页面 */
-	  public static  void uploadFile(String uploadUrl, String srcPath)
+	  public static  boolean uploadFile(String uploadUrl, String srcPath)
 	  {
 //		  判断上传的图片是否存在
+		  boolean uploadStaus=true;
 		  File file = new File(srcPath);
 		  if (file.exists()) {
 			Log.v("clickButton", srcPath);
 		}
 		  else {
 			Log.v("clickButton", "文件不存在");
-			return;
+			uploadStaus=false;//文件不存在默认
+			return uploadStaus;
 		}
 		  
 	    String end = "\r\n";
 	    String twoHyphens = "--";
 	    String boundary = "******";
-	   
 	    try
 	    {
 	    	
 	      URL url = new URL(uploadUrl);
-	      Log.v("clickButton", ""+url);
+	      Log.v("clickButton", "123："+url);
 //	      HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 	      HttpURLConnection con=(HttpURLConnection)url.openConnection();    
 	      
@@ -71,18 +72,18 @@ public class UpLoad {
 
 	      DataOutputStream dos = new DataOutputStream(
 	    		  con.getOutputStream());
-	      dos.writeBytes(twoHyphens + boundary + end);
+	      dos.writeBytes(twoHyphens + boundary + end);//发送分界符
 	      dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\"; filename=\""
 	          + srcPath.substring(srcPath.lastIndexOf("/") + 1)
 	          + "\""
 	          + end);
-	      dos.writeBytes(end);
+	      dos.writeBytes(end);//发送结束符
 	      
 	      Log.v("clickButton", "执行过链接代码啦");
 	      
 	   //   Log.v("clickButton", ""+dos.toString());
 
-	      FileInputStream fis = new FileInputStream(file);
+	      FileInputStream fis = new FileInputStream(file);//读取文件到内存的流
 	     // Log.v("clickButton", "下面读取文件："+fis.toString());
 	      byte[] buffer = new byte[1024]; // 8k
 	      int count = 0;
@@ -100,17 +101,25 @@ public class UpLoad {
 	      Log.v("clickButton","++++"+dos.toString());
 	      fis.close();
 	      Log.v("clickButton","哈哈1");
+	      
 	      dos.writeBytes(end);
 	      Log.v("clickButton","哈哈2");
-	      dos.writeBytes(twoHyphens + boundary + twoHyphens + end);
+	      dos.writeBytes(twoHyphens + boundary + twoHyphens + end);//发送完成，下面的流是接受反馈
 	
 	      dos.flush();
-//	      Log.v("clickButton", "状态码："+con.getResponseCode());
-	      InputStream is = con.getInputStream();
+	      Log.v("clickButton", "状态码："+con.getResponseCode());
+	      InputStream is = con.getInputStream();//获得接收流
 	      InputStreamReader isr = new InputStreamReader(is, "utf-8");
 	      BufferedReader br = new BufferedReader(isr);
 	      String result = br.readLine();
-	      Log.i("clickButton",result);   
+	      Log.i("clickButton","result==="+result); 
+	      
+	      //增加上传成功的判断逻辑
+	      Log.i("clickButton","||"+"The file "+srcPath.substring(srcPath.lastIndexOf("/")+1)+" has been uploaded"+"<br />");
+	      if(result.equals("The file "+srcPath.substring(srcPath.lastIndexOf("/")+1)+" has been uploaded"))uploadStaus=true;
+	      else uploadStaus=false;
+	      
+	      
 //          Toast.makeText(this, "成功了", Toast.LENGTH_SHORT).show();
 //	      Toast.makeText(, result, Toast.LENGTH_LONG).show();
 	      
@@ -133,18 +142,14 @@ public class UpLoad {
 	      is.close();
 	      Log.v("clickButton","哈哈");
 	      
-	      
-
-	      
-	      
-	      
-	      
 	    } catch (Exception e)
 	    {
+	    	uploadStaus=false;
 	        Log.e("你好", "出错了");
-	    	e.printStackTrace();
+      	    return uploadStaus;
 	 //     setTitle(e.getMessage());
 	    }
+	    return uploadStaus;
 	  }	
 	public UpLoad() {
 		// TODO Auto-generated constructor stub

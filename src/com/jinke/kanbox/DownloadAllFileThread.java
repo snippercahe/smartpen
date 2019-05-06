@@ -130,8 +130,8 @@ public class DownloadAllFileThread extends Thread implements RequestListener{
 				
 				if("ok".equals(status)){
 //					Toast.makeText(Start.context, "获得文件列表成功\n" + response, Toast.LENGTH_LONG).show();
-					
-					Start.barTextHandler.sendEmptyMessage(Start.KANBOX_GET_FILELIST);
+					//0425奇怪的东西
+//					Start.barTextHandler.sendEmptyMessage(Start.KANBOX_GET_FILELIST);
 					DownloadProgressActivity.barTextHandler.sendEmptyMessage(DownloadProgressActivity.KANBOX_GET_FILELIST);
 					
 					JSONArray ja = listObj.getJSONArray("contents");
@@ -317,7 +317,10 @@ public class DownloadAllFileThread extends Thread implements RequestListener{
 			}//end for
 			Message msg = new Message();
 			msg.what = Start.KANBOX_FINISH_DOWNLOAD;
-			Start.barTextHandler.sendMessage(msg);
+			
+			
+			//0425cahe取消奇怪的弹出
+//			Start.barTextHandler.sendMessage(msg);
 		}
 	}
 	

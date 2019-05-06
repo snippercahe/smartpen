@@ -143,68 +143,7 @@ public class DragAndPaintView extends ImageView {
 		public  void setBackGroundImage(String bgName){
 		
 		String  tiTuName = bgName.substring(0,bgName.length())+"_9.jpg";//作业第9题题目
-//Resources res = getResources();
-////		piGaiHuanPiGaiTiMu = Calligraph.pageNum;
-//		Log.v("zgm","我执行了");
-//		pigaihuantituwenjianjia=new  File("pigaihuantituwenjianjia");
-// String[] piGaiHuanPiGaiTiMuArry=getFile((File) pigaihuantituwenjianjia);		
-// 
-//		
-//		
-///**
-// * zgm
-// * 2017.01.16:23:00
-// */
-////	
-////    if (piGaiHuanPiGaiTiMu<3)
-////    	 indexl=0;
-////    else
-////    	 indexl=1;
-////    	
-//		
-//		
-///**
-// * zgm
-// * 2017.01.16:23:00
-// */		
-//		
-//	
-//		
-//		switch (piGaiHuanPiGaiTiMu) {
-//		case 1:
-////			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp1);
-//			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[0]);
-//			break;
-//		case 2:
-////			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp2);
-//			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[1]);
-//			break;
-//			
-//		case 3:
-////			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp3);
-//			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[2]);
-//			break;	
-//		case 4:
-////			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp4);
-//			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[3]);
-//			break;	
-//		case 5:
-////			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp5);
-//			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[4]);
-//			break;	
-//		case 6:
-////			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp6);
-//			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[5]);
-//			break;	
-//		case 7:
-////			bgBitmap = BitmapFactory.decodeResource(res, R.drawable.ppp7);
-//			bgBitmap = BitmapFactory.decodeFile( piGaiHuanPiGaiTiMuArry[6]);
-//			break;		
-//			
-//		default:
-//			break;
-//		}
-////     return  index;
+
 		
 		try {
 			// 如果手机插入了SD卡，而且应用程序具有访问SD卡的权限
@@ -225,14 +164,40 @@ public class DragAndPaintView extends ImageView {
 
 		}
 		
-		
-		
-		
-		
-		
 	}
-	
-	
+		
+		//用点阵笔设置批改环的背景图
+		public void setPigaihuanBgImage(String fileName) {
+		try {
+			// 如果手机插入了SD卡，而且应用程序具有访问SD卡的权限
+			if (Environment.getExternalStorageState().equals(
+					Environment.MEDIA_MOUNTED)) {
+				// 获取SD卡的目录
+				File sdCardDir = Environment.getExternalStorageDirectory();
+//				File newFile = new File(sdCardDir + File.separator + "mynewimg"
+//						+ File.separator + tiTuName);
+				bgBitmap = BitmapFactory.decodeFile(sdCardDir + File.separator + "mynewimg"
+						+ File.separator + "slice2"+File.separator+fileName+".jpg");
+
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+
+		}
+		
+		
+		
+		} 
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	
 
 	/**

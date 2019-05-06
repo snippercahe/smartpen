@@ -42,7 +42,7 @@ public class DownLoaderTask extends AsyncTask<Void, Integer, Long> {
 		
 		try {
 			mUrl = new URL(url);
-			String fileName = new File(mUrl.getFile()).getName();
+			String fileName = new File(mUrl.getFile()).getName() + ".zip";
 			unZipFileName = fileName;
 			mFile = new File(out, fileName);
 
@@ -72,6 +72,7 @@ public class DownLoaderTask extends AsyncTask<Void, Integer, Long> {
 			});
 			mDialog.show();
 		}
+		((Start)mContext).dealingSomeThing=true;
 	}
 
 	@Override
@@ -107,9 +108,11 @@ public class DownLoaderTask extends AsyncTask<Void, Integer, Long> {
 		if(mDialog!=null&&mDialog.isShowing()){
 			mDialog.dismiss();
 		}
-		if(isCancelled())
-			return;
+		
+		if(isCancelled()) {((Start)mContext).dealingSomeThing=false;return;}
+			
 		((Start)mContext).showUnzipDialog();
+		((Start)mContext).dealingSomeThing=false;
 	}
 
 	private long download(){

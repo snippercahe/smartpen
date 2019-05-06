@@ -97,9 +97,7 @@ public class HorizontalListViewAdapter extends BaseAdapter {
 		// holder.mTitle.setText(mTitles[position]);
 //		iconBitmap = getPropThumnail(mIconIDs[position]);
 		iconBitmap=getThumBitmap(mPathArray[position]);
-		
 		holder.mImage.setImageBitmap(iconBitmap);
-
 		return convertView;
 	}
 
@@ -153,7 +151,7 @@ public class HorizontalListViewAdapter extends BaseAdapter {
 				R.dimen.thumnail_default_height);
 
 		Bitmap thumBitmap = ThumbnailUtils.extractThumbnail(bb, w, h);
-
+//		thumBitmap.recycle();
 		return thumBitmap;
 	}
 	

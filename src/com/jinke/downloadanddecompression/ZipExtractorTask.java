@@ -15,12 +15,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import com.jinke.calligraphy.app.branch.Calligraph;
+import com.jinke.calligraphy.app.branch.Start;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 
 public class ZipExtractorTask extends AsyncTask<Void, Integer, Long> {
 	private final String TAG = "ZipExtractorTask";
@@ -58,6 +62,10 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Long> {
 	protected void onPostExecute(Long result) {
 		// TODO Auto-generated method stub
 		//super.onPostExecute(result);
+		Calligraph.pageTotal  = Calligraph.getFileNumber("/sdcard/xyz/");
+//		pageTotal = 0;
+		Calligraph.pageText.setText("共"+Calligraph.pageTotal+"份");
+		Calligraph.pageText.setVisibility(View.VISIBLE);
 		if(mDialog!=null&&mDialog.isShowing()){
 			mDialog.dismiss();
 		}
@@ -131,6 +139,10 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Long> {
 			e.printStackTrace();
 		}finally{
 			try {
+				if (zip==null) {
+					((Start) mContext).showToast("要解压的文件为空");	
+					return 0;
+				}
 				zip.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
